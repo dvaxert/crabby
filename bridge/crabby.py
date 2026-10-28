@@ -51,8 +51,7 @@ DEFAULTS = {
     "whisper_bin": "whisper-cli",
     "whisper_model": f"{DATA_DIR}/models/ggml-large-v3-turbo-q5_0.bin",
     "voice_language": "auto",  # whisper language code, or "auto"
-    "silence_sec": 1.5,
-    "max_record_sec": 60,
+    "max_record_sec": 60,  # recording stops on the hotkey or after this long
 }
 
 SYSTEM_PROMPT = """\
@@ -147,71 +146,31 @@ class Notifier:
         threading.Thread(target=run, daemon=True).start()
 
 
-class Vad:
-    """Speech / silence detector over 100 ms RMS levels.
+class Loudness:
+    """Tells whether anything louder than the background was said during a recording.
 
-    A single loud chunk (a key click, the mic opening, a breath) must not count as
-    speech, or the silence timer starts before the user says a word. So: the first
-    chunks are ignored, speech needs several loud chunks in a short window, and silence
-    uses a lower threshold than speech (hysteresis) so quiet syllables don't end the
-    recording. Thresholds are relative to the measured background: mics differ a lot.
+    Whisper invents text on silence, so a recording without speech is not sent.
+    Levels are 100 ms RMS; thresholds are relative to the mic's own background,
+    since quiet mics sit at 50-100 and soft speech there peaks at only 200-300.
     """
 
-    SKIP = 3          # 300 ms: hotkey click and the mic opening
-    CALIBRATE = 3     # then 300 ms of background noise
-    ONSET = 3         # 3 loud chunks out of the last 5 = speech started
-    ONSET_WINDOW = 5
-    NO_SPEECH = 60    # give up after 6 s without speech
+    SKIP = 3  # 300 ms: hotkey click and the mic opening
 
-    def __init__(self, silence_sec):
-        self.silence_limit = max(1, int(silence_sec * 10))
+    def __init__(self):
         self.chunks = 0
-        self.noise = []
-        self.floor = None
-        self.heard = False
-        self.recent = []
-        self.silent_run = 0
+        self.floor = None  # quietest chunk: the gaps between words are background
         self.peak = 0.0
 
-    @property
-    def start_level(self):
-        # Relative to the mic's own background: quiet mics sit at 50-100 RMS,
-        # and soft speech there peaks at only 200-300.
-        return max(120.0, self.floor * 2.5)
-
-    @property
-    def stop_level(self):
-        return max(80.0, self.floor * 1.6)
-
     def feed(self, level):
-        """Returns why to stop ("silence", "no_speech") or None to keep recording."""
         self.chunks += 1
         if self.chunks <= self.SKIP:
-            return None
+            return
+        self.floor = level if self.floor is None else min(self.floor, level)
         self.peak = max(self.peak, level)
-        if self.floor is None:
-            self.noise.append(level)
-            if len(self.noise) >= self.CALIBRATE:
-                self.floor = min(self.noise)  # talking right away must not inflate it
-            return None
-        if not self.heard:
-            loud = level > self.start_level
-            self.recent = (self.recent + [loud])[-self.ONSET_WINDOW:]
-            if sum(self.recent) >= self.ONSET:
-                self.heard = True
-            elif not loud:
-                # Follow the background: fast down, slow up.
-                self.floor = level if level < self.floor else self.floor * 0.9 + level * 0.1
-            if not self.heard and self.chunks >= self.NO_SPEECH:
-                return "no_speech"
-            return None
-        if level < self.stop_level:
-            self.silent_run += 1
-            if self.silent_run >= self.silence_limit:
-                return "silence"
-        else:
-            self.silent_run = 0
-        return None
+
+    @property
+    def heard(self):
+        return self.floor is not None and self.peak > max(120.0, self.floor * 2.5)
 
     def summary(self):
         floor = round(self.floor) if self.floor is not None else None
@@ -219,7 +178,7 @@ class Vad:
 
 
 class Voice:
-    """Records from the mic until toggled again or silence, then transcribes with whisper.cpp."""
+    """Records from the mic until toggled again or max_record_sec, then transcribes with whisper.cpp."""
 
     RATE = 16000
     CHUNK = 1600  # 100 ms of s16 mono samples
@@ -262,8 +221,8 @@ class Voice:
             ["pw-record", "--raw", "--rate", str(self.RATE), "--channels", "1", "--format", "s16", "-"],
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         pcm = bytearray()
-        vad = Vad(cfg["silence_sec"])
-        max_chunks = int(cfg["max_record_sec"] * 10)
+        loudness = Loudness()
+        max_chunks = max(1, int(cfg["max_record_sec"] * 10))
         reason = "toggle"
         try:
             while not self.stop_flag.is_set():
@@ -272,21 +231,16 @@ class Voice:
                     reason = "eof"
                     break
                 pcm += chunk
-                reason = vad.feed(rms(chunk))
-                if reason:
-                    break
-                if vad.chunks >= max_chunks:
+                loudness.feed(rms(chunk))
+                if loudness.chunks >= max_chunks:
                     reason = "max_length"
                     break
-            else:
-                reason = "toggle"
         finally:
             self.proc.terminate()
             self.proc.wait()
             self.proc = None
-        # A manual stop keeps anything louder than the background, even a short word.
-        heard = vad.heard or (reason == "toggle" and vad.floor is not None and vad.peak > vad.start_level)
-        log(f"voice: stop={reason} {vad.summary()}")
+        heard = loudness.heard
+        log(f"voice: stop={reason} {loudness.summary()}")
         if self.cancelled:
             self.bridge.set_voice("idle")
             return

@@ -16,7 +16,7 @@
     "tool": "Spouštím nástroj",
     "permission": "⏸ Čeká na povolení",
     "terminal": "Relace přesunuta do terminálu",
-    "recording": "🎙 Poslouchám… (Mod+` nebo pauza — stop)",
+    "recording": "🎙 Poslouchám… (Mod+` — stop)",
     "transcribing": "⌛ Přepisuji…"
   },
   "settings": {

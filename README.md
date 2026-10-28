@@ -36,7 +36,7 @@
 - **Claude Code-style status line**: `✻ Thinking… (12s · ↓ 340 tok)`, the running tool, a Stop button.
 - **Collapsible tool calls**: `✓ Bash: wpctl status`, click to see the output.
 - **Model switch on the fly**: Haiku / Sonnet / Opus. Every new session starts on the lightest model.
-- **Voice input**: `Mod+\`` records until you press it again or go quiet. [whisper.cpp](https://github.com/ggml-org/whisper.cpp) transcribes it locally on the GPU and the text is sent straight away.
+- **Voice input**: `Mod+\`` records until you press it again (or up to a configurable limit, 60 s by default). [whisper.cpp](https://github.com/ggml-org/whisper.cpp) transcribes it locally on the GPU and the text is sent straight away.
 - **Notifications** when the panel is closed and Claude needs a permission or has finished, with an **Allow** button right in the notification.
 - **Move to terminal**: continue the same session in kitty with `claude --resume`.
 - **Speaks your language.** The UI follows Noctalia's language: English, Русский, Українська, Deutsch, Français, Español, Português (BR), Italiano, Polski, Nederlands, Čeština, Türkçe, 简体中文, 日本語, 한국어. Claude answers in the language you write in.
@@ -113,7 +113,7 @@ Then:
 | | |
 |---|---|
 | Open the panel | click ✱ in the bar · `Mod+Ctrl+\`` |
-| Speak | right-click ✱ · `Mod+\`` (again or pause to stop, ✕ to drop it) |
+| Speak | right-click ✱ · `Mod+\`` (press again to stop, ✕ to drop it) |
 | Send | Enter (Shift+Enter for a newline) |
 | New / end session | ＋ / ⏻ in the panel header |
 | Continue in a terminal | ⌨ in the panel header |
@@ -131,7 +131,7 @@ idle_minutes = 15         # kill claude after this much idle time
 cwd = "~"                 # where claude runs
 whisper_model = "~/.local/share/crabby/models/ggml-large-v3-turbo-q5_0.bin"  # any ggml model
 voice_language = "auto"   # or "en", "de", ... (a fixed language is faster and more accurate)
-silence_sec = 1.5
+max_record_sec = 60       # recording stops on the hotkey or after this long
 ```
 
 The **Allow everything** toggle persists in `~/.local/state/crabby/state.json`.

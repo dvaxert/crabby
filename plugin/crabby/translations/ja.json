@@ -16,7 +16,7 @@
     "tool": "ツールを実行中",
     "permission": "⏸ 許可待ち",
     "terminal": "セッションをターミナルに移しました",
-    "recording": "🎙 聞いています…（Mod+` か無音で停止）",
+    "recording": "🎙 聞いています…（Mod+` で停止）",
     "transcribing": "⌛ 文字起こし中…"
   },
   "settings": {

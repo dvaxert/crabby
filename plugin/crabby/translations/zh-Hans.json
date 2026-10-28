@@ -16,7 +16,7 @@
     "tool": "正在运行工具",
     "permission": "⏸ 等待授权",
     "terminal": "会话已移到终端",
-    "recording": "🎙 正在聆听…（再按 Mod+` 或停顿即结束）",
+    "recording": "🎙 正在聆听…（再按 Mod+` 结束）",
     "transcribing": "⌛ 正在转写…"
   },
   "settings": {

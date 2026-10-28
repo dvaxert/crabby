@@ -16,7 +16,7 @@
     "tool": "Führe Werkzeug aus",
     "permission": "⏸ Wartet auf Erlaubnis",
     "terminal": "Sitzung ins Terminal verschoben",
-    "recording": "🎙 Höre zu… (Mod+` oder Pause zum Beenden)",
+    "recording": "🎙 Höre zu… (Mod+` zum Beenden)",
     "transcribing": "⌛ Transkribiere…"
   },
   "settings": {

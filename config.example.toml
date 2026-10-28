@@ -14,5 +14,4 @@ notify = true
 whisper_bin = "whisper-cli"
 whisper_model = "~/.local/share/crabby/models/ggml-large-v3-turbo-q5_0.bin"
 voice_language = "auto"     # whisper language code, e.g. "en", "ru"; "auto" detects
-silence_sec = 1.5
-max_record_sec = 60
+max_record_sec = 60          # recording stops on Mod+Grave again or after this long

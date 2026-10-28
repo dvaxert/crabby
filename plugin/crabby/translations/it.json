@@ -16,7 +16,7 @@
     "tool": "Eseguo uno strumento",
     "permission": "⏸ In attesa di autorizzazione",
     "terminal": "Sessione spostata in un terminale",
-    "recording": "🎙 Ascolto… (Mod+` o una pausa per fermare)",
+    "recording": "🎙 Ascolto… (Mod+` per fermare)",
     "transcribing": "⌛ Trascrivo…"
   },
   "settings": {

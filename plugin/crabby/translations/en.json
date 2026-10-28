@@ -16,7 +16,7 @@
     "tool": "Running a tool",
     "permission": "⏸ Waiting for permission",
     "terminal": "Session moved to a terminal",
-    "recording": "🎙 Listening… (Mod+` or pause to stop)",
+    "recording": "🎙 Listening… (Mod+` to stop)",
     "transcribing": "⌛ Transcribing…"
   },
   "settings": {

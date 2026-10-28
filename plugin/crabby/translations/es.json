@@ -16,7 +16,7 @@
     "tool": "Ejecutando una herramienta",
     "permission": "⏸ Esperando permiso",
     "terminal": "Sesión movida a una terminal",
-    "recording": "🎙 Escuchando… (Mod+` o una pausa para parar)",
+    "recording": "🎙 Escuchando… (Mod+` para parar)",
     "transcribing": "⌛ Transcribiendo…"
   },
   "settings": {

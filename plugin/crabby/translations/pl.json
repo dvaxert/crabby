@@ -16,7 +16,7 @@
     "tool": "Uruchamiam narzędzie",
     "permission": "⏸ Czeka na zgodę",
     "terminal": "Sesja przeniesiona do terminala",
-    "recording": "🎙 Słucham… (Mod+` lub pauza — stop)",
+    "recording": "🎙 Słucham… (Mod+` — stop)",
     "transcribing": "⌛ Rozpoznaję…"
   },
   "settings": {

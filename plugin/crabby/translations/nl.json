@@ -16,7 +16,7 @@
     "tool": "Voert een tool uit",
     "permission": "⏸ Wacht op toestemming",
     "terminal": "Sessie verplaatst naar een terminal",
-    "recording": "🎙 Luistert… (Mod+` of een pauze om te stoppen)",
+    "recording": "🎙 Luistert… (Mod+` om te stoppen)",
     "transcribing": "⌛ Transcriberen…"
   },
   "settings": {

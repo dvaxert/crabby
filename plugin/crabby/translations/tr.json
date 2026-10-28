@@ -16,7 +16,7 @@
     "tool": "Araç çalıştırılıyor",
     "permission": "⏸ İzin bekleniyor",
     "terminal": "Oturum terminale taşındı",
-    "recording": "🎙 Dinliyorum… (durdurmak için Mod+` ya da sus)",
+    "recording": "🎙 Dinliyorum… (durdurmak için Mod+`)",
     "transcribing": "⌛ Yazıya dökülüyor…"
   },
   "settings": {
