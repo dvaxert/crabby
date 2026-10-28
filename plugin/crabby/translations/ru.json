@@ -1,0 +1,52 @@
+{
+  "title": "Claude",
+  "settings": {
+    "api_port": {
+      "label": "Порт моста",
+      "description": "Порт моста crabby на 127.0.0.1 (должен совпадать с ~/.config/crabby/config.toml и systemd socket)."
+    }
+  },
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "panel": {
+    "allowAll": "Разрешать всё",
+    "placeholder": "Спроси Claude… (Enter — отправить, Shift+Enter — перенос)",
+    "empty": "Спроси что угодно или дай задачу",
+    "emptyHint": "Mod+` — голосом",
+    "permission": "Разрешить {tool}?"
+  },
+  "action": {
+    "allow": "Разрешить",
+    "deny": "Отклонить",
+    "interrupt": "Прервать"
+  },
+  "tooltip": {
+    "model": "Модель для этой сессии",
+    "terminal": "Перенести сессию в терминал",
+    "new": "Новая сессия",
+    "stop": "Завершить сессию",
+    "voice": "Голосовой ввод (Mod+`)",
+    "send": "Отправить",
+    "voiceCancel": "Отменить запись (ничего не отправится)"
+  },
+  "status": {
+    "offline": "Мост недоступен — включён ли crabby-bridge.socket?",
+    "off": "Нет сессии",
+    "starting": "Запускаю claude…",
+    "idle": "Готов · {model}",
+    "thinking": "✻ Думаю…",
+    "tool": "Выполняю",
+    "turn": " ({secs}с)",
+    "turnTokens": " ({secs}с · ↓ {tokens} tok)",
+    "permission": "⏸ Ждёт разрешения",
+    "terminal": "Сессия перенесена в терминал",
+    "recording": "🎙 Слушаю… (Mod+` или пауза — стоп)",
+    "transcribing": "⌛ Распознаю…"
+  },
+  "toast": {
+    "bridgeDown": "Мост crabby не отвечает"
+  }
+}

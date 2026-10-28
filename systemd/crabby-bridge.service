@@ -1,0 +1,11 @@
+[Unit]
+Description=Crabby bridge (Claude Code for the Noctalia panel)
+Requires=crabby-bridge.socket
+After=crabby-bridge.socket
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/crabby serve
+Environment=PYTHONUNBUFFERED=1
+KillMode=mixed
+TimeoutStopSec=5

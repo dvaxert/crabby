@@ -1,0 +1,4 @@
+# Obsidian vault with design notes - kept local
+docs/
+__pycache__/
+*.pyc

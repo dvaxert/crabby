@@ -1,0 +1,52 @@
+# Crabby: Claude Code in the Noctalia panel.
+#
+# service -> the only entry talking to the crabby bridge (127.0.0.1:<port>):
+#            mirrors SSE /events snapshots into noctalia.state "crabby.view",
+#            connects only while the panel is open or a session/voice is active
+# bar     -> asterisk glyph colored by session state, click opens the panel,
+#            right click toggles voice input
+# panel   -> chat: history, tool calls, permission cards, status line, input
+#
+# UI entries send commands through noctalia.state "crabby.cmd".
+# IPC: noctalia msg plugin dvaxert/crabby:service all send|voice|stop|new|interrupt|terminal
+
+id = "dvaxert/crabby"
+name = "Crabby"
+version = "0.1.0"
+plugin_api = 34
+author = "dvaxert"
+license = "MIT"
+dependencies = ["claude"]
+tags = ["ai", "claude", "assistant"]
+icon = "asterisk"
+description = "Claude Code in a Noctalia panel: chat, tool permissions, voice input."
+
+[[setting]]
+key = "api_port"
+type = "int"
+label_key = "settings.api_port.label"
+description_key = "settings.api_port.description"
+default = 18766
+min = 1
+max = 65535
+
+[[service]]
+id = "service"
+entry = "service.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+  [widget.actions]
+  middle = "none"
+
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 460
+height = 640
+placement = "floating"
+position = "top_right"
+open_near_click = false
+keyboard_focus = "exclusive"

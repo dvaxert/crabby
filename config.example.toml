@@ -1,0 +1,18 @@
+# ~/.config/crabby/config.toml - every key is optional; values below are the defaults.
+
+port = 18766                  # must match systemd/crabby-bridge.socket and the plugin setting
+cwd = "~"                     # where claude runs
+claude = "claude"
+extra_args = []               # appended to the claude command line
+default_model = "haiku"       # every new session starts on this model
+idle_minutes = 15             # kill claude after this long idle; 0 disables
+bridge_idle_minutes = 5       # a socket-activated bridge exits when unused this long
+terminal = ["kitty", "--directory", "{cwd}"]   # "move to terminal"; claude --resume is appended
+notify = true
+
+# Voice input (Mod+Grave)
+whisper_bin = "whisper-cli"
+whisper_model = "~/.local/share/crabby/models/ggml-large-v3-turbo-q5_0.bin"
+voice_language = "ru"
+silence_sec = 1.5
+max_record_sec = 60

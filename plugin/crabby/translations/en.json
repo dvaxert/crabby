@@ -1,0 +1,52 @@
+{
+  "title": "Claude",
+  "settings": {
+    "api_port": {
+      "label": "Bridge port",
+      "description": "Port of the crabby bridge on 127.0.0.1 (must match ~/.config/crabby/config.toml and the systemd socket)."
+    }
+  },
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "panel": {
+    "allowAll": "Allow everything",
+    "placeholder": "Ask Claude… (Enter to send, Shift+Enter for newline)",
+    "empty": "Ask anything or give a task",
+    "emptyHint": "Mod+` for voice",
+    "permission": "Allow {tool}?"
+  },
+  "action": {
+    "allow": "Allow",
+    "deny": "Deny",
+    "interrupt": "Stop"
+  },
+  "tooltip": {
+    "model": "Model for this session",
+    "terminal": "Move session to terminal",
+    "new": "New session",
+    "stop": "End session",
+    "voice": "Voice input (Mod+`)",
+    "send": "Send",
+    "voiceCancel": "Cancel recording (nothing is sent)"
+  },
+  "status": {
+    "offline": "Bridge unreachable — is crabby-bridge.socket enabled?",
+    "off": "No session",
+    "starting": "Starting claude…",
+    "idle": "Ready · {model}",
+    "thinking": "✻ Thinking…",
+    "tool": "Running tool",
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "permission": "⏸ Waiting for permission",
+    "terminal": "Session moved to terminal",
+    "recording": "🎙 Listening… (Mod+` or pause to stop)",
+    "transcribing": "⌛ Transcribing…"
+  },
+  "toast": {
+    "bridgeDown": "Crabby bridge is not responding"
+  }
+}
