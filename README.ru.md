@@ -129,7 +129,8 @@ git clone git@github.com:dvaxert/crabby.git && cd crabby
 default_model = "haiku"   # с этой модели начинается каждая сессия
 idle_minutes = 15         # убить claude после стольких минут простоя
 cwd = "~"                 # где запускается claude
-voice_language = "ru"     # или "auto" (по умолчанию); с фиксированным языком быстрее и точнее
+whisper_model = "~/.local/share/crabby/models/ggml-large-v3-turbo-q5_0.bin"  # любая ggml-модель
+voice_language = "auto"   # или "ru", "en", …; с фиксированным языком быстрее и точнее
 silence_sec = 1.5
 ```
 

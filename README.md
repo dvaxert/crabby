@@ -129,6 +129,7 @@ The bar glyph shows the state: dim means no session, pulsing means working, red 
 default_model = "haiku"   # every new session starts here
 idle_minutes = 15         # kill claude after this much idle time
 cwd = "~"                 # where claude runs
+whisper_model = "~/.local/share/crabby/models/ggml-large-v3-turbo-q5_0.bin"  # any ggml model
 voice_language = "auto"   # or "en", "de", ... (a fixed language is faster and more accurate)
 silence_sec = 1.5
 ```
