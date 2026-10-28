@@ -152,13 +152,15 @@ class Vad:
 
     A single loud chunk (a key click, the mic opening, a breath) must not count as
     speech, or the silence timer starts before the user says a word. So: the first
-    chunks are ignored, speech needs several loud chunks in a row, and silence uses a
-    lower threshold than speech (hysteresis) so quiet syllables don't end the recording.
+    chunks are ignored, speech needs several loud chunks in a short window, and silence
+    uses a lower threshold than speech (hysteresis) so quiet syllables don't end the
+    recording. Thresholds are relative to the measured background: mics differ a lot.
     """
 
     SKIP = 3          # 300 ms: hotkey click and the mic opening
     CALIBRATE = 3     # then 300 ms of background noise
-    ONSET = 3         # 300 ms of loud chunks in a row = speech started
+    ONSET = 3         # 3 loud chunks out of the last 5 = speech started
+    ONSET_WINDOW = 5
     NO_SPEECH = 60    # give up after 6 s without speech
 
     def __init__(self, silence_sec):
@@ -167,17 +169,19 @@ class Vad:
         self.noise = []
         self.floor = None
         self.heard = False
-        self.loud_run = 0
+        self.recent = []
         self.silent_run = 0
         self.peak = 0.0
 
     @property
     def start_level(self):
-        return max(400.0, self.floor * 3.0)
+        # Relative to the mic's own background: quiet mics sit at 50-100 RMS,
+        # and soft speech there peaks at only 200-300.
+        return max(120.0, self.floor * 2.5)
 
     @property
     def stop_level(self):
-        return max(250.0, self.floor * 1.8)
+        return max(80.0, self.floor * 1.6)
 
     def feed(self, level):
         """Returns why to stop ("silence", "no_speech") or None to keep recording."""
@@ -191,12 +195,11 @@ class Vad:
                 self.floor = min(self.noise)  # talking right away must not inflate it
             return None
         if not self.heard:
-            if level > self.start_level:
-                self.loud_run += 1
-                if self.loud_run >= self.ONSET:
-                    self.heard = True
-            else:
-                self.loud_run = 0
+            loud = level > self.start_level
+            self.recent = (self.recent + [loud])[-self.ONSET_WINDOW:]
+            if sum(self.recent) >= self.ONSET:
+                self.heard = True
+            elif not loud:
                 # Follow the background: fast down, slow up.
                 self.floor = level if level < self.floor else self.floor * 0.9 + level * 0.1
             if not self.heard and self.chunks >= self.NO_SPEECH:
