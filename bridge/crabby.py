@@ -147,12 +147,79 @@ class Notifier:
         threading.Thread(target=run, daemon=True).start()
 
 
+class Vad:
+    """Speech / silence detector over 100 ms RMS levels.
+
+    A single loud chunk (a key click, the mic opening, a breath) must not count as
+    speech, or the silence timer starts before the user says a word. So: the first
+    chunks are ignored, speech needs several loud chunks in a row, and silence uses a
+    lower threshold than speech (hysteresis) so quiet syllables don't end the recording.
+    """
+
+    SKIP = 3          # 300 ms: hotkey click and the mic opening
+    CALIBRATE = 3     # then 300 ms of background noise
+    ONSET = 3         # 300 ms of loud chunks in a row = speech started
+    NO_SPEECH = 60    # give up after 6 s without speech
+
+    def __init__(self, silence_sec):
+        self.silence_limit = max(1, int(silence_sec * 10))
+        self.chunks = 0
+        self.noise = []
+        self.floor = None
+        self.heard = False
+        self.loud_run = 0
+        self.silent_run = 0
+        self.peak = 0.0
+
+    @property
+    def start_level(self):
+        return max(400.0, self.floor * 3.0)
+
+    @property
+    def stop_level(self):
+        return max(250.0, self.floor * 1.8)
+
+    def feed(self, level):
+        """Returns why to stop ("silence", "no_speech") or None to keep recording."""
+        self.chunks += 1
+        if self.chunks <= self.SKIP:
+            return None
+        self.peak = max(self.peak, level)
+        if self.floor is None:
+            self.noise.append(level)
+            if len(self.noise) >= self.CALIBRATE:
+                self.floor = min(self.noise)  # talking right away must not inflate it
+            return None
+        if not self.heard:
+            if level > self.start_level:
+                self.loud_run += 1
+                if self.loud_run >= self.ONSET:
+                    self.heard = True
+            else:
+                self.loud_run = 0
+                # Follow the background: fast down, slow up.
+                self.floor = level if level < self.floor else self.floor * 0.9 + level * 0.1
+            if not self.heard and self.chunks >= self.NO_SPEECH:
+                return "no_speech"
+            return None
+        if level < self.stop_level:
+            self.silent_run += 1
+            if self.silent_run >= self.silence_limit:
+                return "silence"
+        else:
+            self.silent_run = 0
+        return None
+
+    def summary(self):
+        floor = round(self.floor) if self.floor is not None else None
+        return f"chunks={self.chunks} heard={self.heard} floor={floor} peak={round(self.peak)}"
+
+
 class Voice:
     """Records from the mic until toggled again or silence, then transcribes with whisper.cpp."""
 
     RATE = 16000
     CHUNK = 1600  # 100 ms of s16 mono samples
-    NO_SPEECH_CHUNKS = 60  # give up after 6 s without speech
 
     def __init__(self, bridge):
         self.bridge = bridge
@@ -192,40 +259,31 @@ class Voice:
             ["pw-record", "--raw", "--rate", str(self.RATE), "--channels", "1", "--format", "s16", "-"],
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         pcm = bytearray()
-        noise = []
-        threshold = None
-        heard = False
-        silent_chunks = 0
-        silence_limit = int(cfg["silence_sec"] * 10)
+        vad = Vad(cfg["silence_sec"])
         max_chunks = int(cfg["max_record_sec"] * 10)
+        reason = "toggle"
         try:
             while not self.stop_flag.is_set():
                 chunk = self.proc.stdout.read(self.CHUNK * 2)
                 if not chunk:
+                    reason = "eof"
                     break
                 pcm += chunk
-                level = rms(chunk)
-                if threshold is None:
-                    # The first ~300 ms calibrate the background noise level.
-                    noise.append(level)
-                    if len(noise) >= 3:
-                        threshold = max(400.0, max(noise) * 2.5)
-                    continue
-                if level > threshold:
-                    heard = True
-                    silent_chunks = 0
-                elif not heard and len(pcm) >= self.NO_SPEECH_CHUNKS * self.CHUNK * 2:
+                reason = vad.feed(rms(chunk))
+                if reason:
                     break
-                elif heard:
-                    silent_chunks += 1
-                    if silent_chunks >= silence_limit:
-                        break
-                if len(pcm) >= max_chunks * self.CHUNK * 2:
+                if vad.chunks >= max_chunks:
+                    reason = "max_length"
                     break
+            else:
+                reason = "toggle"
         finally:
             self.proc.terminate()
             self.proc.wait()
             self.proc = None
+        # A manual stop keeps anything louder than the background, even a short word.
+        heard = vad.heard or (reason == "toggle" and vad.floor is not None and vad.peak > vad.start_level)
+        log(f"voice: stop={reason} {vad.summary()}")
         if self.cancelled:
             self.bridge.set_voice("idle")
             return
