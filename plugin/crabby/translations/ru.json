@@ -1,15 +1,29 @@
 {
   "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Мост недоступен — включён ли crabby-bridge.socket?",
+    "off": "Нет сессии",
+    "starting": "Запускаю claude…",
+    "idle": "Готов · {model}",
+    "thinking": "✻ Думаю…",
+    "tool": "Выполняю",
+    "permission": "⏸ Ждёт разрешения",
+    "terminal": "Сессия перенесена в терминал",
+    "recording": "🎙 Слушаю… (Mod+` или пауза — стоп)",
+    "transcribing": "⌛ Распознаю…"
+  },
   "settings": {
     "api_port": {
       "label": "Порт моста",
       "description": "Порт моста crabby на 127.0.0.1 (должен совпадать с ~/.config/crabby/config.toml и systemd socket)."
     }
-  },
-  "model": {
-    "haiku": "Haiku",
-    "sonnet": "Sonnet",
-    "opus": "Opus"
   },
   "panel": {
     "allowAll": "Разрешать всё",
@@ -29,24 +43,27 @@
     "new": "Новая сессия",
     "stop": "Завершить сессию",
     "voice": "Голосовой ввод (Mod+`)",
-    "send": "Отправить",
-    "voiceCancel": "Отменить запись (ничего не отправится)"
-  },
-  "status": {
-    "offline": "Мост недоступен — включён ли crabby-bridge.socket?",
-    "off": "Нет сессии",
-    "starting": "Запускаю claude…",
-    "idle": "Готов · {model}",
-    "thinking": "✻ Думаю…",
-    "tool": "Выполняю",
-    "turn": " ({secs}с)",
-    "turnTokens": " ({secs}с · ↓ {tokens} tok)",
-    "permission": "⏸ Ждёт разрешения",
-    "terminal": "Сессия перенесена в терминал",
-    "recording": "🎙 Слушаю… (Mod+` или пауза — стоп)",
-    "transcribing": "⌛ Распознаю…"
+    "voiceCancel": "Отменить запись (ничего не отправится)",
+    "send": "Отправить"
   },
   "toast": {
     "bridgeDown": "Мост crabby не отвечает"
+  },
+  "system": {
+    "session_ended": "Сессия завершена",
+    "idle_timeout": "Сессия завершена: простой {minutes} мин",
+    "interrupted": "Прервано",
+    "moved_to_terminal": "Сессия перенесена в терминал",
+    "claude_exited": "claude завершился (код {code}). {error}",
+    "turn_error": "Ошибка: {error}",
+    "voice_unavailable": "Голосовой ввод недоступен: нужен {bin} и модель {model}",
+    "voice_failed": "Распознавание не удалось: {error}",
+    "nothing_heard": "Ничего не услышал"
+  },
+  "notify": {
+    "done": "Claude ответил",
+    "doneBody": "Готово",
+    "permission": "Claude просит разрешение: {tool}",
+    "open": "Открыть"
   }
 }

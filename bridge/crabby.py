@@ -50,7 +50,7 @@ DEFAULTS = {
     "notify": True,
     "whisper_bin": "whisper-cli",
     "whisper_model": f"{DATA_DIR}/models/ggml-large-v3-turbo-q5_0.bin",
-    "voice_language": "ru",
+    "voice_language": "auto",  # whisper language code, or "auto"
     "silence_sec": 1.5,
     "max_record_sec": 60,
 }
@@ -94,6 +94,21 @@ def tool_summary(name, inp):
         if isinstance(val, str) and val:
             return val.splitlines()[0][:200]
     return json.dumps(inp, ensure_ascii=False)[:200] if inp else ""
+
+
+def sys_item(code, error=False, **args):
+    """A system line in the chat; the plugin renders it via its translations."""
+    return {"k": "system", "code": code, "args": args, "error": error}
+
+
+# Notification texts; the plugin overrides them with its current language via POST /client.
+DEFAULT_STRINGS = {
+    "notify_done": "Claude replied",
+    "notify_done_body": "Done",
+    "notify_permission": "Claude needs permission: {tool}",
+    "action_allow": "Allow",
+    "action_open": "Open",
+}
 
 
 def result_text(content):
@@ -163,8 +178,7 @@ class Voice:
     def start(self):
         cfg = self.bridge.cfg
         if not shutil.which(cfg["whisper_bin"]) or not os.path.exists(cfg["whisper_model"]):
-            self.bridge.add_item({"k": "system", "error": True,
-                                  "text": f"Голосовой ввод недоступен: нужен {cfg['whisper_bin']} и модель {cfg['whisper_model']}"})
+            self.bridge.add_item(sys_item("voice_unavailable", True, bin=cfg["whisper_bin"], model=cfg["whisper_model"]))
             return
         self.stop_flag.clear()
         self.cancelled = False
@@ -218,7 +232,7 @@ class Voice:
         if not heard:
             # Whisper hallucinates text on silence; nothing said means nothing sent.
             self.bridge.set_voice("idle")
-            self.bridge.add_item({"k": "system", "text": "Ничего не услышал"})
+            self.bridge.add_item(sys_item("nothing_heard"))
             return
         self.bridge.set_voice("transcribing")
         text = self.transcribe(bytes(pcm))
@@ -239,12 +253,12 @@ class Voice:
             res = subprocess.run([cfg["whisper_bin"], "-m", cfg["whisper_model"], "-l", cfg["voice_language"],
                                   "-nt", "-np", "-f", path], capture_output=True, text=True, timeout=120)
         except Exception as exc:
-            self.bridge.add_item({"k": "system", "error": True, "text": f"Распознавание упало: {exc}"})
+            self.bridge.add_item(sys_item("voice_failed", True, error=str(exc)))
             return ""
         finally:
             os.unlink(path)
         if res.returncode != 0:
-            self.bridge.add_item({"k": "system", "error": True, "text": f"whisper: {res.stderr.strip()[-300:]}"})
+            self.bridge.add_item(sys_item("voice_failed", True, error=res.stderr.strip()[-300:]))
             return ""
         return " ".join(line.strip() for line in res.stdout.splitlines() if line.strip())
 
@@ -274,6 +288,7 @@ class Bridge:
         self.last_request = time.time()
         self.sse_clients = 0
         self.panel_open = False
+        self.strings = dict(DEFAULT_STRINGS)
         self.notifier = Notifier(self)
         self.voice = Voice(self)
         self.view = {
@@ -367,12 +382,13 @@ class Bridge:
         self.touch()
 
     def stop(self, reason=None, status="off"):
+        """End the session; `reason` is a sys_item shown in the chat."""
         with self.lock:
             proc, self.proc = self.proc, None
             self.pending.clear()
             self.view.update(active=False, status=status, turn=None, model=self.cfg["default_model"])
             if reason:
-                self.view["items"].append({"k": "system", "text": reason})
+                self.view["items"].append(reason)
         if proc:
             try:
                 proc.stdin.close()
@@ -424,7 +440,7 @@ class Bridge:
         with self.lock:
             self.interrupted = True
             for rid in list(self.pending):
-                self.answer(rid, False, "Прервано пользователем")
+                self.answer(rid, False, "Interrupted by the user")
         self.control({"subtype": "interrupt"})
 
     def set_model(self, model):
@@ -445,7 +461,7 @@ class Bridge:
                     self.answer(rid, True)
         self.touch()
 
-    def answer(self, request_id, allow, message="Пользователь отклонил"):
+    def answer(self, request_id, allow, message="The user denied this"):
         with self.lock:
             req = self.pending.pop(request_id, None)
             if req is None:
@@ -465,11 +481,18 @@ class Bridge:
             sid, model = self.view["session_id"], self.view["model"]
         if not sid:
             return
-        self.stop("Сессия перенесена в терминал", status="terminal")
+        self.stop(sys_item("moved_to_terminal"), status="terminal")
         argv = [a.replace("{cwd}", self.cfg["cwd"]) for a in self.cfg["terminal"]]
         argv += [self.cfg["claude"], "--resume", sid, "--model", model]
         subprocess.Popen(argv, cwd=self.cfg["cwd"], start_new_session=True,
                          stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    def set_client(self, data):
+        if "panel_open" in data:
+            self.panel_open = bool(data["panel_open"])
+        strings = data.get("strings")
+        if isinstance(strings, dict):
+            self.strings.update({k: str(v) for k, v in strings.items() if k in DEFAULT_STRINGS and v})
 
     def open_panel(self):
         if shutil.which("noctalia"):
@@ -505,7 +528,7 @@ class Bridge:
                 time.sleep(0.05)
                 err = getattr(proc, "stderr_tail", "")
                 self.proc = None
-                self.stop(f"claude завершился (код {code}). {err[-300:]}".strip())
+                self.stop(sys_item("claude_exited", True, code=code, error=err[-300:]))
 
     def handle(self, msg):
         kind = msg.get("type")
@@ -619,14 +642,14 @@ class Bridge:
         self.view["status"] = "idle"
         self.view["turn"] = None
         if self.interrupted:
-            self.view["items"].append({"k": "system", "text": "Прервано"})
+            self.view["items"].append(sys_item("interrupted"))
         elif msg.get("is_error") and msg.get("subtype") != "success":
-            self.view["items"].append({"k": "system", "error": True,
-                                       "text": f"Ошибка: {msg.get('result') or msg.get('subtype')}"})
+            self.view["items"].append(sys_item("turn_error", True, error=str(msg.get("result") or msg.get("subtype"))))
         if not self.panel_open and not self.interrupted:
             last = next((it["text"] for it in reversed(self.view["items"]) if it["k"] == "assistant"), "")
-            self.notifier.send("Claude ответил", last.strip() or "Готово",
-                               {"open": ("Открыть", self.open_panel)})
+            t = self.strings
+            self.notifier.send(t["notify_done"], last.strip() or t["notify_done_body"],
+                               {"open": (t["action_open"], self.open_panel)})
 
     def handle_control(self, msg):
         req = msg.get("request", {})
@@ -644,9 +667,10 @@ class Bridge:
         if not self.panel_open:
             name = req.get("display_name") or req.get("tool_name", "?")
             summary = req.get("description") or tool_summary(req.get("tool_name"), req.get("input"))
-            self.notifier.send(f"Claude просит разрешение: {name}", summary,
-                               {"allow": ("Разрешить", lambda: self.answer(rid, True)),
-                                "open": ("Открыть", self.open_panel)}, urgency="critical")
+            t = self.strings
+            self.notifier.send(t["notify_permission"].replace("{tool}", name), summary,
+                               {"allow": (t["action_allow"], lambda: self.answer(rid, True)),
+                                "open": (t["action_open"], self.open_panel)}, urgency="critical")
 
     # --- housekeeping -------------------------------------------------------
 
@@ -657,7 +681,7 @@ class Bridge:
             with self.lock:
                 idle = self.proc and self.view["status"] in ("idle", "starting") and not self.pending
                 if idle and idle_min and time.time() - self.last_activity > idle_min * 60:
-                    self.stop(f"Сессия завершена: простой {idle_min} мин")
+                    self.stop(sys_item("idle_timeout", minutes=idle_min))
                 unused = (not self.proc and self.sse_clients == 0 and self.view["voice"] == "idle"
                           and time.time() - self.last_request > self.cfg["bridge_idle_minutes"] * 60)
             if activated and unused:
@@ -735,13 +759,13 @@ class Handler(BaseHTTPRequestHandler):
             "/model": lambda: b.set_model(str(data.get("model"))),
             "/allow_all": lambda: b.set_allow_all(bool(data.get("value"))),
             "/session/start": b.start,
-            "/session/stop": lambda: b.stop("Сессия завершена"),
+            "/session/stop": lambda: b.stop(sys_item("session_ended")),
             "/session/new": lambda: (b.stop(), b.start()),
             "/terminal": b.to_terminal,
             "/voice/toggle": b.voice.toggle,
             "/voice/cancel": b.voice.cancel,
             "/open": b.open_panel,
-            "/client": lambda: setattr(b, "panel_open", bool(data.get("panel_open"))),
+            "/client": lambda: b.set_client(data),
         }
         action = routes.get(self.path)
         if action is None:

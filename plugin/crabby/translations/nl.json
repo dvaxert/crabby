@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Bridge onbereikbaar — is crabby-bridge.socket ingeschakeld?",
+    "off": "Geen sessie",
+    "starting": "claude wordt gestart…",
+    "idle": "Klaar · {model}",
+    "thinking": "✻ Denkt na…",
+    "tool": "Voert een tool uit",
+    "permission": "⏸ Wacht op toestemming",
+    "terminal": "Sessie verplaatst naar een terminal",
+    "recording": "🎙 Luistert… (Mod+` of een pauze om te stoppen)",
+    "transcribing": "⌛ Transcriberen…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Bridge-poort",
+      "description": "Poort van de crabby-bridge op 127.0.0.1 (moet overeenkomen met ~/.config/crabby/config.toml en de systemd-socket)."
+    }
+  },
+  "panel": {
+    "allowAll": "Alles toestaan",
+    "placeholder": "Vraag Claude… (Enter om te versturen, Shift+Enter voor een nieuwe regel)",
+    "empty": "Stel een vraag of geef een taak",
+    "emptyHint": "Mod+` voor spraak",
+    "permission": "{tool} toestaan?"
+  },
+  "action": {
+    "allow": "Toestaan",
+    "deny": "Weigeren",
+    "interrupt": "Stoppen"
+  },
+  "tooltip": {
+    "model": "Model voor deze sessie",
+    "terminal": "Sessie naar een terminal verplaatsen",
+    "new": "Nieuwe sessie",
+    "stop": "Sessie beëindigen",
+    "voice": "Spraakinvoer (Mod+`)",
+    "voiceCancel": "Opname annuleren (er wordt niets verstuurd)",
+    "send": "Versturen"
+  },
+  "toast": {
+    "bridgeDown": "De crabby-bridge reageert niet"
+  },
+  "system": {
+    "session_ended": "Sessie beëindigd",
+    "idle_timeout": "Sessie beëindigd na {minutes} min inactiviteit",
+    "interrupted": "Onderbroken",
+    "moved_to_terminal": "Sessie verplaatst naar een terminal",
+    "claude_exited": "claude is gestopt (code {code}). {error}",
+    "turn_error": "Fout: {error}",
+    "voice_unavailable": "Spraakinvoer niet beschikbaar: vereist {bin} en het model {model}",
+    "voice_failed": "Transcriptie mislukt: {error}",
+    "nothing_heard": "Niets gehoord"
+  },
+  "notify": {
+    "done": "Claude heeft geantwoord",
+    "doneBody": "Klaar",
+    "permission": "Claude vraagt toestemming: {tool}",
+    "open": "Openen"
+  }
+}

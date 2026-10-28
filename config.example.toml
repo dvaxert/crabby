@@ -13,6 +13,6 @@ notify = true
 # Voice input (Mod+Grave)
 whisper_bin = "whisper-cli"
 whisper_model = "~/.local/share/crabby/models/ggml-large-v3-turbo-q5_0.bin"
-voice_language = "ru"
+voice_language = "auto"     # whisper language code, e.g. "en", "ru"; "auto" detects
 silence_sec = 1.5
 max_record_sec = 60

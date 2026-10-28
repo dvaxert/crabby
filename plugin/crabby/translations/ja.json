@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "ブリッジに接続できません — crabby-bridge.socket は有効ですか？",
+    "off": "セッションなし",
+    "starting": "claude を起動中…",
+    "idle": "準備完了 · {model}",
+    "thinking": "✻ 考え中…",
+    "tool": "ツールを実行中",
+    "permission": "⏸ 許可待ち",
+    "terminal": "セッションをターミナルに移しました",
+    "recording": "🎙 聞いています…（Mod+` か無音で停止）",
+    "transcribing": "⌛ 文字起こし中…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "ブリッジのポート",
+      "description": "127.0.0.1 上の crabby ブリッジのポート（~/.config/crabby/config.toml と systemd ソケットに合わせてください）。"
+    }
+  },
+  "panel": {
+    "allowAll": "すべて許可",
+    "placeholder": "Claude に質問…（Enter で送信、Shift+Enter で改行）",
+    "empty": "何でも質問するか、タスクを任せてください",
+    "emptyHint": "Mod+` で音声入力",
+    "permission": "{tool} を許可しますか？"
+  },
+  "action": {
+    "allow": "許可",
+    "deny": "拒否",
+    "interrupt": "停止"
+  },
+  "tooltip": {
+    "model": "このセッションのモデル",
+    "terminal": "セッションをターミナルに移す",
+    "new": "新しいセッション",
+    "stop": "セッションを終了",
+    "voice": "音声入力（Mod+`）",
+    "voiceCancel": "録音を取り消す（何も送信されません）",
+    "send": "送信"
+  },
+  "toast": {
+    "bridgeDown": "crabby ブリッジが応答しません"
+  },
+  "system": {
+    "session_ended": "セッションを終了しました",
+    "idle_timeout": "{minutes} 分間操作がなかったためセッションを終了しました",
+    "interrupted": "中断しました",
+    "moved_to_terminal": "セッションをターミナルに移しました",
+    "claude_exited": "claude が終了しました（コード {code}）。{error}",
+    "turn_error": "エラー: {error}",
+    "voice_unavailable": "音声入力を利用できません: {bin} とモデル {model} が必要です",
+    "voice_failed": "文字起こしに失敗しました: {error}",
+    "nothing_heard": "何も聞こえませんでした"
+  },
+  "notify": {
+    "done": "Claude が返信しました",
+    "doneBody": "完了",
+    "permission": "Claude が許可を求めています: {tool}",
+    "open": "開く"
+  }
+}

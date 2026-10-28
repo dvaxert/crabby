@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "无法连接桥接——crabby-bridge.socket 是否已启用？",
+    "off": "无会话",
+    "starting": "正在启动 claude…",
+    "idle": "就绪 · {model}",
+    "thinking": "✻ 思考中…",
+    "tool": "正在运行工具",
+    "permission": "⏸ 等待授权",
+    "terminal": "会话已移到终端",
+    "recording": "🎙 正在聆听…（再按 Mod+` 或停顿即结束）",
+    "transcribing": "⌛ 正在转写…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "桥接端口",
+      "description": "crabby 桥接在 127.0.0.1 上的端口（须与 ~/.config/crabby/config.toml 和 systemd socket 一致）。"
+    }
+  },
+  "panel": {
+    "allowAll": "全部允许",
+    "placeholder": "问 Claude…（Enter 发送，Shift+Enter 换行）",
+    "empty": "随便问点什么，或交给它一个任务",
+    "emptyHint": "Mod+` 语音输入",
+    "permission": "允许 {tool}？"
+  },
+  "action": {
+    "allow": "允许",
+    "deny": "拒绝",
+    "interrupt": "停止"
+  },
+  "tooltip": {
+    "model": "本会话使用的模型",
+    "terminal": "将会话移到终端",
+    "new": "新会话",
+    "stop": "结束会话",
+    "voice": "语音输入（Mod+`）",
+    "voiceCancel": "取消录音（不会发送任何内容）",
+    "send": "发送"
+  },
+  "toast": {
+    "bridgeDown": "crabby 桥接无响应"
+  },
+  "system": {
+    "session_ended": "会话已结束",
+    "idle_timeout": "空闲 {minutes} 分钟后会话已结束",
+    "interrupted": "已中断",
+    "moved_to_terminal": "会话已移到终端",
+    "claude_exited": "claude 已退出（代码 {code}）。{error}",
+    "turn_error": "错误：{error}",
+    "voice_unavailable": "语音输入不可用：需要 {bin} 和模型 {model}",
+    "voice_failed": "转写失败：{error}",
+    "nothing_heard": "没有听到声音"
+  },
+  "notify": {
+    "done": "Claude 已回复",
+    "doneBody": "完成",
+    "permission": "Claude 请求授权：{tool}",
+    "open": "打开"
+  }
+}

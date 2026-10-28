@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Köprüye ulaşılamıyor — crabby-bridge.socket etkin mi?",
+    "off": "Oturum yok",
+    "starting": "claude başlatılıyor…",
+    "idle": "Hazır · {model}",
+    "thinking": "✻ Düşünüyor…",
+    "tool": "Araç çalıştırılıyor",
+    "permission": "⏸ İzin bekleniyor",
+    "terminal": "Oturum terminale taşındı",
+    "recording": "🎙 Dinliyorum… (durdurmak için Mod+` ya da sus)",
+    "transcribing": "⌛ Yazıya dökülüyor…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Köprü portu",
+      "description": "crabby köprüsünün 127.0.0.1 üzerindeki portu (~/.config/crabby/config.toml ve systemd soketiyle aynı olmalı)."
+    }
+  },
+  "panel": {
+    "allowAll": "Her şeye izin ver",
+    "placeholder": "Claude'a sor… (Enter gönderir, Shift+Enter yeni satır)",
+    "empty": "Bir şey sor ya da bir görev ver",
+    "emptyHint": "Ses için Mod+`",
+    "permission": "{tool} için izin verilsin mi?"
+  },
+  "action": {
+    "allow": "İzin ver",
+    "deny": "Reddet",
+    "interrupt": "Durdur"
+  },
+  "tooltip": {
+    "model": "Bu oturumun modeli",
+    "terminal": "Oturumu terminale taşı",
+    "new": "Yeni oturum",
+    "stop": "Oturumu bitir",
+    "voice": "Sesli giriş (Mod+`)",
+    "voiceCancel": "Kaydı iptal et (hiçbir şey gönderilmez)",
+    "send": "Gönder"
+  },
+  "toast": {
+    "bridgeDown": "crabby köprüsü yanıt vermiyor"
+  },
+  "system": {
+    "session_ended": "Oturum sona erdi",
+    "idle_timeout": "Oturum {minutes} dk hareketsizlik sonrası sona erdi",
+    "interrupted": "Kesildi",
+    "moved_to_terminal": "Oturum terminale taşındı",
+    "claude_exited": "claude kapandı (kod {code}). {error}",
+    "turn_error": "Hata: {error}",
+    "voice_unavailable": "Sesli giriş kullanılamıyor: {bin} ve {model} modeli gerekli",
+    "voice_failed": "Yazıya dökme başarısız: {error}",
+    "nothing_heard": "Hiçbir şey duymadım"
+  },
+  "notify": {
+    "done": "Claude yanıtladı",
+    "doneBody": "Bitti",
+    "permission": "Claude izin istiyor: {tool}",
+    "open": "Aç"
+  }
+}

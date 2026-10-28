@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Pont injoignable — crabby-bridge.socket est-il activé ?",
+    "off": "Aucune session",
+    "starting": "Démarrage de claude…",
+    "idle": "Prêt · {model}",
+    "thinking": "✻ Réflexion…",
+    "tool": "Exécution d'un outil",
+    "permission": "⏸ En attente d'autorisation",
+    "terminal": "Session déplacée dans un terminal",
+    "recording": "🎙 J'écoute… (Mod+` ou une pause pour arrêter)",
+    "transcribing": "⌛ Transcription…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Port du pont",
+      "description": "Port du pont crabby sur 127.0.0.1 (doit correspondre à ~/.config/crabby/config.toml et au socket systemd)."
+    }
+  },
+  "panel": {
+    "allowAll": "Tout autoriser",
+    "placeholder": "Demande à Claude… (Entrée pour envoyer, Maj+Entrée pour un saut de ligne)",
+    "empty": "Pose une question ou donne une tâche",
+    "emptyHint": "Mod+` pour la voix",
+    "permission": "Autoriser {tool} ?"
+  },
+  "action": {
+    "allow": "Autoriser",
+    "deny": "Refuser",
+    "interrupt": "Arrêter"
+  },
+  "tooltip": {
+    "model": "Modèle pour cette session",
+    "terminal": "Déplacer la session dans un terminal",
+    "new": "Nouvelle session",
+    "stop": "Terminer la session",
+    "voice": "Saisie vocale (Mod+`)",
+    "voiceCancel": "Annuler l'enregistrement (rien n'est envoyé)",
+    "send": "Envoyer"
+  },
+  "toast": {
+    "bridgeDown": "Le pont crabby ne répond pas"
+  },
+  "system": {
+    "session_ended": "Session terminée",
+    "idle_timeout": "Session terminée après {minutes} min d'inactivité",
+    "interrupted": "Interrompu",
+    "moved_to_terminal": "Session déplacée dans un terminal",
+    "claude_exited": "claude s'est arrêté (code {code}). {error}",
+    "turn_error": "Erreur : {error}",
+    "voice_unavailable": "Saisie vocale indisponible : il faut {bin} et le modèle {model}",
+    "voice_failed": "La transcription a échoué : {error}",
+    "nothing_heard": "Je n'ai rien entendu"
+  },
+  "notify": {
+    "done": "Claude a répondu",
+    "doneBody": "Terminé",
+    "permission": "Claude demande une autorisation : {tool}",
+    "open": "Ouvrir"
+  }
+}

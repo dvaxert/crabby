@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Most je nedostupný — je zapnutý crabby-bridge.socket?",
+    "off": "Žádná relace",
+    "starting": "Spouštím claude…",
+    "idle": "Připraven · {model}",
+    "thinking": "✻ Přemýšlím…",
+    "tool": "Spouštím nástroj",
+    "permission": "⏸ Čeká na povolení",
+    "terminal": "Relace přesunuta do terminálu",
+    "recording": "🎙 Poslouchám… (Mod+` nebo pauza — stop)",
+    "transcribing": "⌛ Přepisuji…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Port mostu",
+      "description": "Port mostu crabby na 127.0.0.1 (musí odpovídat ~/.config/crabby/config.toml a socketu systemd)."
+    }
+  },
+  "panel": {
+    "allowAll": "Povolit vše",
+    "placeholder": "Zeptej se Claude… (Enter — odeslat, Shift+Enter — nový řádek)",
+    "empty": "Zeptej se na cokoli nebo zadej úkol",
+    "emptyHint": "Mod+` — hlasem",
+    "permission": "Povolit {tool}?"
+  },
+  "action": {
+    "allow": "Povolit",
+    "deny": "Zamítnout",
+    "interrupt": "Zastavit"
+  },
+  "tooltip": {
+    "model": "Model pro tuto relaci",
+    "terminal": "Přesunout relaci do terminálu",
+    "new": "Nová relace",
+    "stop": "Ukončit relaci",
+    "voice": "Hlasový vstup (Mod+`)",
+    "voiceCancel": "Zrušit nahrávání (nic se neodešle)",
+    "send": "Odeslat"
+  },
+  "toast": {
+    "bridgeDown": "Most crabby neodpovídá"
+  },
+  "system": {
+    "session_ended": "Relace ukončena",
+    "idle_timeout": "Relace ukončena po {minutes} min nečinnosti",
+    "interrupted": "Přerušeno",
+    "moved_to_terminal": "Relace přesunuta do terminálu",
+    "claude_exited": "claude skončil (kód {code}). {error}",
+    "turn_error": "Chyba: {error}",
+    "voice_unavailable": "Hlasový vstup není dostupný: je potřeba {bin} a model {model}",
+    "voice_failed": "Přepis selhal: {error}",
+    "nothing_heard": "Nic jsem neslyšel"
+  },
+  "notify": {
+    "done": "Claude odpověděl",
+    "doneBody": "Hotovo",
+    "permission": "Claude žádá o povolení: {tool}",
+    "open": "Otevřít"
+  }
+}

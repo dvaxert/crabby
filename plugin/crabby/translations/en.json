@@ -1,19 +1,33 @@
 {
   "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Bridge unreachable — is crabby-bridge.socket enabled?",
+    "off": "No session",
+    "starting": "Starting claude…",
+    "idle": "Ready · {model}",
+    "thinking": "✻ Thinking…",
+    "tool": "Running a tool",
+    "permission": "⏸ Waiting for permission",
+    "terminal": "Session moved to a terminal",
+    "recording": "🎙 Listening… (Mod+` or pause to stop)",
+    "transcribing": "⌛ Transcribing…"
+  },
   "settings": {
     "api_port": {
       "label": "Bridge port",
       "description": "Port of the crabby bridge on 127.0.0.1 (must match ~/.config/crabby/config.toml and the systemd socket)."
     }
   },
-  "model": {
-    "haiku": "Haiku",
-    "sonnet": "Sonnet",
-    "opus": "Opus"
-  },
   "panel": {
     "allowAll": "Allow everything",
-    "placeholder": "Ask Claude… (Enter to send, Shift+Enter for newline)",
+    "placeholder": "Ask Claude… (Enter to send, Shift+Enter for a newline)",
     "empty": "Ask anything or give a task",
     "emptyHint": "Mod+` for voice",
     "permission": "Allow {tool}?"
@@ -25,28 +39,31 @@
   },
   "tooltip": {
     "model": "Model for this session",
-    "terminal": "Move session to terminal",
+    "terminal": "Move session to a terminal",
     "new": "New session",
     "stop": "End session",
     "voice": "Voice input (Mod+`)",
-    "send": "Send",
-    "voiceCancel": "Cancel recording (nothing is sent)"
-  },
-  "status": {
-    "offline": "Bridge unreachable — is crabby-bridge.socket enabled?",
-    "off": "No session",
-    "starting": "Starting claude…",
-    "idle": "Ready · {model}",
-    "thinking": "✻ Thinking…",
-    "tool": "Running tool",
-    "turn": " ({secs}s)",
-    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
-    "permission": "⏸ Waiting for permission",
-    "terminal": "Session moved to terminal",
-    "recording": "🎙 Listening… (Mod+` or pause to stop)",
-    "transcribing": "⌛ Transcribing…"
+    "voiceCancel": "Cancel recording (nothing is sent)",
+    "send": "Send"
   },
   "toast": {
     "bridgeDown": "Crabby bridge is not responding"
+  },
+  "system": {
+    "session_ended": "Session ended",
+    "idle_timeout": "Session ended after {minutes} min idle",
+    "interrupted": "Interrupted",
+    "moved_to_terminal": "Session moved to a terminal",
+    "claude_exited": "claude exited (code {code}). {error}",
+    "turn_error": "Error: {error}",
+    "voice_unavailable": "Voice input unavailable: needs {bin} and the model {model}",
+    "voice_failed": "Transcription failed: {error}",
+    "nothing_heard": "Didn't hear anything"
+  },
+  "notify": {
+    "done": "Claude replied",
+    "doneBody": "Done",
+    "permission": "Claude needs permission: {tool}",
+    "open": "Open"
   }
 }

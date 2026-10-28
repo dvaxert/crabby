@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Most nieosiągalny — czy crabby-bridge.socket jest włączony?",
+    "off": "Brak sesji",
+    "starting": "Uruchamiam claude…",
+    "idle": "Gotowy · {model}",
+    "thinking": "✻ Myślę…",
+    "tool": "Uruchamiam narzędzie",
+    "permission": "⏸ Czeka na zgodę",
+    "terminal": "Sesja przeniesiona do terminala",
+    "recording": "🎙 Słucham… (Mod+` lub pauza — stop)",
+    "transcribing": "⌛ Rozpoznaję…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Port mostu",
+      "description": "Port mostu crabby na 127.0.0.1 (musi zgadzać się z ~/.config/crabby/config.toml i gniazdem systemd)."
+    }
+  },
+  "panel": {
+    "allowAll": "Zezwalaj na wszystko",
+    "placeholder": "Zapytaj Claude… (Enter — wyślij, Shift+Enter — nowa linia)",
+    "empty": "Zapytaj o cokolwiek lub zleć zadanie",
+    "emptyHint": "Mod+` — głosem",
+    "permission": "Zezwolić na {tool}?"
+  },
+  "action": {
+    "allow": "Zezwól",
+    "deny": "Odrzuć",
+    "interrupt": "Przerwij"
+  },
+  "tooltip": {
+    "model": "Model dla tej sesji",
+    "terminal": "Przenieś sesję do terminala",
+    "new": "Nowa sesja",
+    "stop": "Zakończ sesję",
+    "voice": "Wprowadzanie głosowe (Mod+`)",
+    "voiceCancel": "Anuluj nagranie (nic nie zostanie wysłane)",
+    "send": "Wyślij"
+  },
+  "toast": {
+    "bridgeDown": "Most crabby nie odpowiada"
+  },
+  "system": {
+    "session_ended": "Sesja zakończona",
+    "idle_timeout": "Sesja zakończona po {minutes} min bezczynności",
+    "interrupted": "Przerwano",
+    "moved_to_terminal": "Sesja przeniesiona do terminala",
+    "claude_exited": "claude zakończył działanie (kod {code}). {error}",
+    "turn_error": "Błąd: {error}",
+    "voice_unavailable": "Wprowadzanie głosowe niedostępne: wymaga {bin} i modelu {model}",
+    "voice_failed": "Rozpoznawanie nie powiodło się: {error}",
+    "nothing_heard": "Nic nie usłyszałem"
+  },
+  "notify": {
+    "done": "Claude odpowiedział",
+    "doneBody": "Gotowe",
+    "permission": "Claude prosi o zgodę: {tool}",
+    "open": "Otwórz"
+  }
+}

@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/hero.png" alt="Chat, permission prompt and voice input in the panel">
+  <img src="assets/screenshots/en/hero.png" alt="Chat and a permission prompt in the panel">
 </p>
 
 ## Features
@@ -39,11 +39,12 @@
 - **Voice input**: `Mod+\`` records until you press it again or go quiet. [whisper.cpp](https://github.com/ggml-org/whisper.cpp) transcribes it locally on the GPU and the text is sent straight away.
 - **Notifications** when the panel is closed and Claude needs a permission or has finished, with an **Allow** button right in the notification.
 - **Move to terminal**: continue the same session in kitty with `claude --resume`.
+- **Speaks your language.** The UI follows Noctalia's language: English, Русский, Українська, Deutsch, Français, Español, Português (BR), Italiano, Polski, Nederlands, Čeština, Türkçe, 简体中文, 日本語, 한국어. Claude answers in the language you write in.
 - **Nothing runs when unused.** The bridge is socket-activated by systemd and exits when idle. `claude` lives only while a session is open and is killed after 15 idle minutes.
 
 <table>
   <tr>
-    <td><img src="assets/screenshots/notification.png" alt="Permission notification" width="420"></td>
+    <td><img src="assets/screenshots/en/notification.png" alt="Permission notification" width="420"></td>
     <td>
       <b>Panel closed?</b><br>
       Crabby notifies you when Claude is waiting for a permission or has finished.
@@ -128,7 +129,7 @@ The bar glyph shows the state: dim means no session, pulsing means working, red 
 default_model = "haiku"   # every new session starts here
 idle_minutes = 15         # kill claude after this much idle time
 cwd = "~"                 # where claude runs
-voice_language = "ru"
+voice_language = "auto"   # or "en", "de", ... (a fixed language is faster and more accurate)
 silence_sec = 1.5
 ```
 
@@ -144,6 +145,10 @@ curl -s localhost:18766/state | jq                       # current view snapshot
 ```
 
 `.luau` edits hot-reload; restart the bridge with `systemctl --user restart crabby-bridge`.
+
+### Translations
+
+Strings live in [`tools/gen_translations.py`](tools/gen_translations.py), which writes `plugin/crabby/translations/*.json` and checks every language has every key. To add a language, add a table named like Noctalia's own translation files (`pt-BR`, `zh-Hans`, …) and run `python3 tools/gen_translations.py`. The bridge has no UI strings: it sends message codes, and the plugin hands it localized notification texts.
 
 ## License
 

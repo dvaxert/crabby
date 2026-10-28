@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Ponte inacessível — o crabby-bridge.socket está ativado?",
+    "off": "Sem sessão",
+    "starting": "Iniciando o claude…",
+    "idle": "Pronto · {model}",
+    "thinking": "✻ Pensando…",
+    "tool": "Executando uma ferramenta",
+    "permission": "⏸ Aguardando permissão",
+    "terminal": "Sessão movida para um terminal",
+    "recording": "🎙 Ouvindo… (Mod+` ou uma pausa para parar)",
+    "transcribing": "⌛ Transcrevendo…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Porta da ponte",
+      "description": "Porta da ponte crabby em 127.0.0.1 (deve coincidir com ~/.config/crabby/config.toml e o socket do systemd)."
+    }
+  },
+  "panel": {
+    "allowAll": "Permitir tudo",
+    "placeholder": "Pergunte ao Claude… (Enter para enviar, Shift+Enter para nova linha)",
+    "empty": "Pergunte qualquer coisa ou passe uma tarefa",
+    "emptyHint": "Mod+` para voz",
+    "permission": "Permitir {tool}?"
+  },
+  "action": {
+    "allow": "Permitir",
+    "deny": "Negar",
+    "interrupt": "Parar"
+  },
+  "tooltip": {
+    "model": "Modelo desta sessão",
+    "terminal": "Mover a sessão para um terminal",
+    "new": "Nova sessão",
+    "stop": "Encerrar sessão",
+    "voice": "Entrada por voz (Mod+`)",
+    "voiceCancel": "Cancelar gravação (nada é enviado)",
+    "send": "Enviar"
+  },
+  "toast": {
+    "bridgeDown": "A ponte crabby não está respondendo"
+  },
+  "system": {
+    "session_ended": "Sessão encerrada",
+    "idle_timeout": "Sessão encerrada após {minutes} min de inatividade",
+    "interrupted": "Interrompido",
+    "moved_to_terminal": "Sessão movida para um terminal",
+    "claude_exited": "claude encerrou (código {code}). {error}",
+    "turn_error": "Erro: {error}",
+    "voice_unavailable": "Entrada por voz indisponível: requer {bin} e o modelo {model}",
+    "voice_failed": "A transcrição falhou: {error}",
+    "nothing_heard": "Não ouvi nada"
+  },
+  "notify": {
+    "done": "Claude respondeu",
+    "doneBody": "Pronto",
+    "permission": "Claude precisa de permissão: {tool}",
+    "open": "Abrir"
+  }
+}

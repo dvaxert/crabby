@@ -19,6 +19,8 @@ local panelOpen = false
 local wantUntil = 0 -- os.time() until which a recent command keeps the stream
 local retryAt = 0
 
+local sendClient -- defined after base/post helpers; onLine needs it first
+
 local OFF_VIEW = { active = false, status = "off", voice = "idle", items = {}, permissions = {} }
 
 local function readConfig()
@@ -62,6 +64,9 @@ local function onLine(gen, line)
   if type(decoded) ~= "table" then
     return
   end
+  if not gotData then
+    sendClient()
+  end
   gotData = true
   view = decoded
   publish(raw)
@@ -97,6 +102,26 @@ local function connect()
   if stream == nil then
     retryAt = os.time() + 3
   end
+end
+
+-- Tells the bridge whether the panel is open (it notifies only when closed)
+-- and hands it notification texts in the shell's current language.
+function sendClient()
+  noctalia.http({
+    url = base .. "/client",
+    method = "POST",
+    body = (noctalia.json.encode({
+      panel_open = panelOpen,
+      strings = {
+        notify_done = noctalia.tr("notify.done"),
+        notify_done_body = noctalia.tr("notify.doneBody"),
+        notify_permission = noctalia.tr("notify.permission"),
+        action_allow = noctalia.tr("action.allow"),
+        action_open = noctalia.tr("notify.open"),
+      },
+    })),
+    headers = { "Content-Type: application/json" },
+  }, function(_res) end)
 end
 
 local function post(path, body)
@@ -181,9 +206,8 @@ noctalia.state.watch("crabby.panel", function(value)
   if open then
     connect()
   end
-  -- The bridge notifies only while the panel is closed.
-  if stream or open then
-    post("/client", { panel_open = open })
+  if stream then
+    sendClient()
   end
 end)
 

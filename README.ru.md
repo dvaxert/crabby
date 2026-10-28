@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/hero.png" alt="Чат, запрос разрешения и голосовой ввод в панели">
+  <img src="assets/screenshots/ru/hero.png" alt="Чат, запрос разрешения и голосовой ввод в панели">
 </p>
 
 ## Возможности
@@ -39,11 +39,12 @@
 - **Голосовой ввод**: `Mod+\`` пишет, пока не нажмёшь ещё раз или не замолчишь. Распознаёт [whisper.cpp](https://github.com/ggml-org/whisper.cpp) локально на видеокарте, и текст сразу уходит Claude.
 - **Уведомления.** Если панель закрыта, а Claude ждёт разрешения или закончил, придёт уведомление. Кнопка «Разрешить» есть прямо в нём.
 - **Перенос в терминал**: та же сессия продолжается в kitty через `claude --resume`.
+- **Говорит на твоём языке.** Интерфейс следует языку Noctalia: English, Русский, Українська, Deutsch, Français, Español, Português (BR), Italiano, Polski, Nederlands, Čeština, Türkçe, 简体中文, 日本語, 한국어. Claude отвечает на том языке, на котором ты пишешь.
 - **Без дела ничего не крутится.** Мост запускается systemd по сокету и сам выходит, когда простаивает. `claude` живёт только пока открыта сессия и убивается после 15 минут простоя.
 
 <table>
   <tr>
-    <td><img src="assets/screenshots/notification.png" alt="Уведомление о запросе разрешения" width="420"></td>
+    <td><img src="assets/screenshots/ru/notification.png" alt="Уведомление о запросе разрешения" width="420"></td>
     <td>
       <b>Панель закрыта?</b><br>
       Crabby пришлёт уведомление, когда Claude ждёт разрешения или закончил.
@@ -128,7 +129,7 @@ git clone git@github.com:dvaxert/crabby.git && cd crabby
 default_model = "haiku"   # с этой модели начинается каждая сессия
 idle_minutes = 15         # убить claude после стольких минут простоя
 cwd = "~"                 # где запускается claude
-voice_language = "ru"
+voice_language = "ru"     # или "auto" (по умолчанию); с фиксированным языком быстрее и точнее
 silence_sec = 1.5
 ```
 
@@ -144,6 +145,10 @@ curl -s localhost:18766/state | jq                       # текущий сна
 ```
 
 Изменения в `.luau` подхватываются на лету. Мост перезапускается командой `systemctl --user restart crabby-bridge`.
+
+### Переводы
+
+Строки лежат в [`tools/gen_translations.py`](tools/gen_translations.py). Скрипт пишет `plugin/crabby/translations/*.json` и проверяет, что в каждом языке есть все ключи. Чтобы добавить язык, заведи таблицу с именем как у файлов переводов самой Noctalia (`pt-BR`, `zh-Hans`, …) и запусти `python3 tools/gen_translations.py`. В мосте нет строк интерфейса: он шлёт коды сообщений, а тексты уведомлений на нужном языке ему передаёт плагин.
 
 ## Лицензия
 

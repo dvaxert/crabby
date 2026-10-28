@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Puente inaccesible — ¿está activado crabby-bridge.socket?",
+    "off": "Sin sesión",
+    "starting": "Iniciando claude…",
+    "idle": "Listo · {model}",
+    "thinking": "✻ Pensando…",
+    "tool": "Ejecutando una herramienta",
+    "permission": "⏸ Esperando permiso",
+    "terminal": "Sesión movida a una terminal",
+    "recording": "🎙 Escuchando… (Mod+` o una pausa para parar)",
+    "transcribing": "⌛ Transcribiendo…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Puerto del puente",
+      "description": "Puerto del puente crabby en 127.0.0.1 (debe coincidir con ~/.config/crabby/config.toml y el socket de systemd)."
+    }
+  },
+  "panel": {
+    "allowAll": "Permitir todo",
+    "placeholder": "Pregunta a Claude… (Intro para enviar, Mayús+Intro para nueva línea)",
+    "empty": "Pregunta lo que quieras o da una tarea",
+    "emptyHint": "Mod+` para voz",
+    "permission": "¿Permitir {tool}?"
+  },
+  "action": {
+    "allow": "Permitir",
+    "deny": "Denegar",
+    "interrupt": "Detener"
+  },
+  "tooltip": {
+    "model": "Modelo para esta sesión",
+    "terminal": "Mover la sesión a una terminal",
+    "new": "Nueva sesión",
+    "stop": "Terminar sesión",
+    "voice": "Entrada de voz (Mod+`)",
+    "voiceCancel": "Cancelar grabación (no se envía nada)",
+    "send": "Enviar"
+  },
+  "toast": {
+    "bridgeDown": "El puente crabby no responde"
+  },
+  "system": {
+    "session_ended": "Sesión terminada",
+    "idle_timeout": "Sesión terminada tras {minutes} min de inactividad",
+    "interrupted": "Interrumpido",
+    "moved_to_terminal": "Sesión movida a una terminal",
+    "claude_exited": "claude terminó (código {code}). {error}",
+    "turn_error": "Error: {error}",
+    "voice_unavailable": "Entrada de voz no disponible: se necesita {bin} y el modelo {model}",
+    "voice_failed": "La transcripción falló: {error}",
+    "nothing_heard": "No oí nada"
+  },
+  "notify": {
+    "done": "Claude respondió",
+    "doneBody": "Listo",
+    "permission": "Claude necesita permiso: {tool}",
+    "open": "Abrir"
+  }
+}

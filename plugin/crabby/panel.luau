@@ -141,9 +141,20 @@ local function toolItem(item)
   }, children)
 end
 
+local function systemText(item)
+  if type(item.code) ~= "string" then
+    return item.text or ""
+  end
+  local args = {}
+  for k, v in pairs(type(item.args) == "table" and item.args or {}) do
+    args[k] = tostring(v)
+  end
+  return noctalia.tr("system." .. item.code, args)
+end
+
 local function systemItem(item)
   return ui.label({
-    text = item.text,
+    text = systemText(item),
     fontSize = 12,
     color = item.error and "error" or "on_surface_variant",
     textAlign = "center",

@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Bridge irraggiungibile — crabby-bridge.socket è attivo?",
+    "off": "Nessuna sessione",
+    "starting": "Avvio di claude…",
+    "idle": "Pronto · {model}",
+    "thinking": "✻ Sto pensando…",
+    "tool": "Eseguo uno strumento",
+    "permission": "⏸ In attesa di autorizzazione",
+    "terminal": "Sessione spostata in un terminale",
+    "recording": "🎙 Ascolto… (Mod+` o una pausa per fermare)",
+    "transcribing": "⌛ Trascrivo…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Porta del bridge",
+      "description": "Porta del bridge crabby su 127.0.0.1 (deve corrispondere a ~/.config/crabby/config.toml e al socket systemd)."
+    }
+  },
+  "panel": {
+    "allowAll": "Consenti tutto",
+    "placeholder": "Chiedi a Claude… (Invio per inviare, Maiusc+Invio per andare a capo)",
+    "empty": "Chiedi qualcosa o assegna un compito",
+    "emptyHint": "Mod+` per la voce",
+    "permission": "Consentire {tool}?"
+  },
+  "action": {
+    "allow": "Consenti",
+    "deny": "Nega",
+    "interrupt": "Ferma"
+  },
+  "tooltip": {
+    "model": "Modello per questa sessione",
+    "terminal": "Sposta la sessione in un terminale",
+    "new": "Nuova sessione",
+    "stop": "Termina sessione",
+    "voice": "Input vocale (Mod+`)",
+    "voiceCancel": "Annulla registrazione (non viene inviato nulla)",
+    "send": "Invia"
+  },
+  "toast": {
+    "bridgeDown": "Il bridge crabby non risponde"
+  },
+  "system": {
+    "session_ended": "Sessione terminata",
+    "idle_timeout": "Sessione terminata dopo {minutes} min di inattività",
+    "interrupted": "Interrotto",
+    "moved_to_terminal": "Sessione spostata in un terminale",
+    "claude_exited": "claude è terminato (codice {code}). {error}",
+    "turn_error": "Errore: {error}",
+    "voice_unavailable": "Input vocale non disponibile: servono {bin} e il modello {model}",
+    "voice_failed": "Trascrizione non riuscita: {error}",
+    "nothing_heard": "Non ho sentito nulla"
+  },
+  "notify": {
+    "done": "Claude ha risposto",
+    "doneBody": "Fatto",
+    "permission": "Claude chiede un'autorizzazione: {tool}",
+    "open": "Apri"
+  }
+}

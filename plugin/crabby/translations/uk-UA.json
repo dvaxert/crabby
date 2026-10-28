@@ -1,0 +1,69 @@
+{
+  "title": "Claude",
+  "model": {
+    "haiku": "Haiku",
+    "sonnet": "Sonnet",
+    "opus": "Opus"
+  },
+  "status": {
+    "turn": " ({secs}s)",
+    "turnTokens": " ({secs}s · ↓ {tokens} tok)",
+    "offline": "Міст недоступний — чи увімкнено crabby-bridge.socket?",
+    "off": "Немає сесії",
+    "starting": "Запускаю claude…",
+    "idle": "Готовий · {model}",
+    "thinking": "✻ Думаю…",
+    "tool": "Виконую",
+    "permission": "⏸ Чекає дозволу",
+    "terminal": "Сесію перенесено в термінал",
+    "recording": "🎙 Слухаю… (Mod+` або пауза — стоп)",
+    "transcribing": "⌛ Розпізнаю…"
+  },
+  "settings": {
+    "api_port": {
+      "label": "Порт мосту",
+      "description": "Порт мосту crabby на 127.0.0.1 (має збігатися з ~/.config/crabby/config.toml і systemd socket)."
+    }
+  },
+  "panel": {
+    "allowAll": "Дозволяти все",
+    "placeholder": "Запитай Claude… (Enter — надіслати, Shift+Enter — новий рядок)",
+    "empty": "Запитай що завгодно або дай завдання",
+    "emptyHint": "Mod+` — голосом",
+    "permission": "Дозволити {tool}?"
+  },
+  "action": {
+    "allow": "Дозволити",
+    "deny": "Відхилити",
+    "interrupt": "Перервати"
+  },
+  "tooltip": {
+    "model": "Модель для цієї сесії",
+    "terminal": "Перенести сесію в термінал",
+    "new": "Нова сесія",
+    "stop": "Завершити сесію",
+    "voice": "Голосове введення (Mod+`)",
+    "voiceCancel": "Скасувати запис (нічого не надішлеться)",
+    "send": "Надіслати"
+  },
+  "toast": {
+    "bridgeDown": "Міст crabby не відповідає"
+  },
+  "system": {
+    "session_ended": "Сесію завершено",
+    "idle_timeout": "Сесію завершено: простій {minutes} хв",
+    "interrupted": "Перервано",
+    "moved_to_terminal": "Сесію перенесено в термінал",
+    "claude_exited": "claude завершився (код {code}). {error}",
+    "turn_error": "Помилка: {error}",
+    "voice_unavailable": "Голосове введення недоступне: потрібні {bin} і модель {model}",
+    "voice_failed": "Не вдалося розпізнати: {error}",
+    "nothing_heard": "Нічого не почув"
+  },
+  "notify": {
+    "done": "Claude відповів",
+    "doneBody": "Готово",
+    "permission": "Claude просить дозвіл: {tool}",
+    "open": "Відкрити"
+  }
+}

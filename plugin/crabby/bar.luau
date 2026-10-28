@@ -46,6 +46,10 @@ noctalia.state.watch("crabby.view", function(value)
   render()
 end)
 
+-- The service may have published before this entry loaded.
+view = common.decode(noctalia.state.get("crabby.view"))
+render()
+
 function update()
   phase = not phase
   render()
