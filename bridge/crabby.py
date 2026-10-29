@@ -5,6 +5,7 @@
   crabby voice [cancel] toggle voice input / drop the recording unsent
   crabby send TEXT      send a message
   crabby open|stop|new  open the panel / end the session / start a new one
+  crabby history        list past panel sessions
 
 The bridge owns one `claude -p` process in stream-json mode (only while a
 session is active), answers its permission prompts, and serves the plugin a
@@ -14,6 +15,7 @@ snapshots, POST endpoints are commands.
 
 import json
 import os
+import re
 import shutil
 import signal
 import socket
@@ -36,6 +38,7 @@ HOME = os.path.expanduser("~")
 CONFIG_PATH = os.path.join(os.environ.get("XDG_CONFIG_HOME", f"{HOME}/.config"), "crabby", "config.toml")
 STATE_DIR = os.path.join(os.environ.get("XDG_STATE_HOME", f"{HOME}/.local/state"), "crabby")
 DATA_DIR = os.path.join(os.environ.get("XDG_DATA_HOME", f"{HOME}/.local/share"), "crabby")
+CLAUDE_DIR = os.environ.get("CLAUDE_CONFIG_DIR", f"{HOME}/.claude")
 ICON_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "assets", "crabby.svg")
 
 DEFAULTS = {
@@ -117,6 +120,115 @@ def result_text(content):
         parts = [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
         return "\n".join(parts)
     return ""
+
+
+# --- history ------------------------------------------------------------------
+# Past sessions are read from Claude Code's own transcripts, so nothing is stored
+# twice and `claude --resume` continues them. Panel sessions are the stream-json
+# ones (entrypoint "sdk-cli") in the project dir of the configured cwd.
+
+HISTORY_LIMIT = 50
+SESSION_ID_RE = re.compile(r"^[0-9a-f-]{36}$")
+
+
+def transcript_dir(cwd):
+    return os.path.join(CLAUDE_DIR, "projects", re.sub(r"[^A-Za-z0-9]", "-", cwd))
+
+
+def transcript_path(cwd, session_id):
+    if not SESSION_ID_RE.match(session_id or ""):
+        return None
+    path = os.path.join(transcript_dir(cwd), f"{session_id}.jsonl")
+    return path if os.path.exists(path) else None
+
+
+def read_jsonl(path):
+    with open(path, encoding="utf-8", errors="replace") as f:
+        for line in f:
+            try:
+                msg = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(msg, dict):
+                yield msg
+
+
+def user_text(msg):
+    """The typed text of a user transcript line, or "" for tool results, meta and commands."""
+    if msg.get("isMeta") or msg.get("isSidechain"):
+        return ""
+    content = (msg.get("message") or {}).get("content")
+    if isinstance(content, list):
+        content = "\n".join(b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text")
+    if not isinstance(content, str) or content.startswith("<"):
+        return ""
+    return content.strip()
+
+
+def session_info(path):
+    """{id, title, updated} of a panel session, or None for other sessions."""
+    title = first = ""
+    entry = None
+    for msg in read_jsonl(path):
+        entry = entry or msg.get("entrypoint")
+        if msg.get("type") == "ai-title":
+            title = msg.get("aiTitle") or title
+        elif not first and msg.get("type") == "user":
+            first = user_text(msg)
+    if entry != "sdk-cli" or not first:
+        return None
+    title = title or first
+    return {"id": os.path.basename(path)[:-6], "title": " ".join(title.split())[:120],
+            "updated": int(os.path.getmtime(path))}
+
+
+def list_history(cwd):
+    try:
+        names = [n for n in os.listdir(transcript_dir(cwd)) if n.endswith(".jsonl")]
+    except FileNotFoundError:
+        return []
+    paths = sorted((os.path.join(transcript_dir(cwd), n) for n in names), key=os.path.getmtime, reverse=True)
+    sessions = []
+    for path in paths:
+        info = session_info(path)
+        if info:
+            sessions.append(info)
+            if len(sessions) >= HISTORY_LIMIT:
+                break
+    return sessions
+
+
+def load_transcript(path):
+    """Rebuilds panel items (user / assistant / tool) from a transcript."""
+    items, tools = [], {}
+    for msg in read_jsonl(path):
+        kind = msg.get("type")
+        if kind not in ("user", "assistant") or msg.get("isSidechain"):
+            continue
+        content = (msg.get("message") or {}).get("content")
+        if kind == "user":
+            text = user_text(msg)
+            if text.startswith("[Request interrupted"):
+                items.append(sys_item("interrupted"))
+            elif text:
+                items.append({"k": "user", "text": text, "voice": False})
+            for block in content if isinstance(content, list) else []:
+                if isinstance(block, dict) and block.get("type") == "tool_result":
+                    item = tools.get(block.get("tool_use_id"))
+                    if item:
+                        item["output"] = result_text(block.get("content"))[-MAX_TOOL_OUTPUT:]
+                        item["state"] = "error" if block.get("is_error") else "done"
+            continue
+        for block in content if isinstance(content, list) else []:
+            bt = block.get("type") if isinstance(block, dict) else None
+            if bt == "text" and block.get("text", "").strip():
+                items.append({"k": "assistant", "text": block["text"]})
+            elif bt == "tool_use":
+                item = {"k": "tool", "id": block.get("id"), "name": block.get("name"),
+                        "summary": tool_summary(block.get("name"), block.get("input")), "output": "", "state": "done"}
+                tools[item["id"]] = item
+                items.append(item)
+    return items[-MAX_ITEMS:]
 
 
 class Notifier:
@@ -316,7 +428,9 @@ class Bridge:
             "permissions": [],
             "turn": None,  # {started, tokens, tool}
             "voice": "idle",  # idle | recording | transcribing
+            "resume_id": "",  # the next message resumes this session instead of starting a new one
         }
+        self.restore()
 
     # --- persistent state ---------------------------------------------------
 
@@ -330,7 +444,36 @@ class Bridge:
     def save_state(self):
         os.makedirs(STATE_DIR, exist_ok=True)
         with open(os.path.join(STATE_DIR, "state.json"), "w") as f:
-            json.dump({"allow_all": self.view["allow_all"]}, f)
+            json.dump({"allow_all": self.view["allow_all"], "resume_id": self.view["resume_id"]}, f)
+
+    def restore(self):
+        """A socket-activated bridge exits when idle: bring back the chat it was showing."""
+        rid = self.load_state().get("resume_id", "")
+        if transcript_path(self.cfg["cwd"], rid):
+            self.load_session(rid)
+
+    def load_session(self, session_id):
+        """Shows a past session; the next message continues it with `claude --resume`."""
+        path = transcript_path(self.cfg["cwd"], session_id)
+        if not path:
+            return False
+        items = load_transcript(path)
+        with self.lock:
+            self.stream_items.clear()
+            self.tool_items.clear()
+            self.view.update(active=False, status="off", turn=None, session_id=session_id, resume_id=session_id,
+                             items=items + [sys_item("history_loaded")])
+            self.save_state()
+        self.touch()
+        return True
+
+    def open_history(self, session_id):
+        with self.lock:
+            if self.proc and session_id == self.view["session_id"]:
+                return  # already the live session
+        if transcript_path(self.cfg["cwd"], session_id):
+            self.stop()
+            self.load_session(session_id)
 
     # --- view ---------------------------------------------------------------
 
@@ -377,7 +520,10 @@ class Bridge:
         with self.lock:
             if self.proc:
                 return
-            self.view.update(active=True, status="starting", session_id="", items=[], turn=None)
+            resume = self.view["resume_id"]
+            self.view.update(active=True, status="starting", turn=None, resume_id="")
+            if not resume:
+                self.view.update(session_id="", items=[])
             self.pending.clear()
             self.stream_items.clear()
             self.tool_items.clear()
@@ -387,6 +533,8 @@ class Bridge:
                     "--permission-prompts", "host", "--permission-prompt-tool", "stdio",
                     "--model", self.view["model"],
                     "--append-system-prompt", SYSTEM_PROMPT, *self.cfg["extra_args"]]
+            if resume:
+                argv += ["--resume", resume]
             self.proc = subprocess.Popen(argv, cwd=self.cfg["cwd"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE, text=True, bufsize=1, start_new_session=True)
             proc = self.proc
@@ -396,14 +544,20 @@ class Bridge:
         self.control({"subtype": "initialize"})
         self.touch()
 
-    def stop(self, reason=None, status="off"):
-        """End the session; `reason` is a sys_item shown in the chat."""
+    def stop(self, reason=None, status="off", resumable=False):
+        """End the session; `reason` is a sys_item shown in the chat.
+
+        `resumable`: the session ended without the user asking (idle timeout, crash,
+        bridge exit), so the next message continues it instead of starting fresh.
+        """
         with self.lock:
             proc, self.proc = self.proc, None
             self.pending.clear()
-            self.view.update(active=False, status=status, turn=None, model=self.cfg["default_model"])
+            self.view.update(active=False, status=status, turn=None, model=self.cfg["default_model"],
+                             resume_id=self.view["session_id"] if resumable else "")
             if reason:
                 self.view["items"].append(reason)
+            self.save_state()
         if proc:
             try:
                 proc.stdin.close()
@@ -543,7 +697,7 @@ class Bridge:
                 time.sleep(0.05)
                 err = getattr(proc, "stderr_tail", "")
                 self.proc = None
-                self.stop(sys_item("claude_exited", True, code=code, error=err[-300:]))
+                self.stop(sys_item("claude_exited", True, code=code, error=err[-300:]), resumable=True)
 
     def handle(self, msg):
         kind = msg.get("type")
@@ -696,7 +850,7 @@ class Bridge:
             with self.lock:
                 idle = self.proc and self.view["status"] in ("idle", "starting") and not self.pending
                 if idle and idle_min and time.time() - self.last_activity > idle_min * 60:
-                    self.stop(sys_item("idle_timeout", minutes=idle_min))
+                    self.stop(sys_item("idle_timeout", minutes=idle_min), resumable=True)
                 unused = (not self.proc and self.sse_clients == 0 and self.view["voice"] == "idle"
                           and time.time() - self.last_request > self.cfg["bridge_idle_minutes"] * 60)
             if activated and unused:
@@ -724,6 +878,8 @@ class Handler(BaseHTTPRequestHandler):
         b.last_request = time.time()
         if self.path == "/state":
             self.reply(body=b.snapshot().encode())
+        elif self.path == "/history":
+            self.reply(body=json.dumps(list_history(b.cfg["cwd"]), ensure_ascii=False).encode())
         elif self.path == "/events":
             self.events()
         else:
@@ -777,6 +933,7 @@ class Handler(BaseHTTPRequestHandler):
             "/session/stop": lambda: b.stop(sys_item("session_ended")),
             "/session/new": lambda: (b.stop(), b.start()),
             "/terminal": b.to_terminal,
+            "/history/open": lambda: b.open_history(str(data.get("id", ""))),
             "/voice/toggle": b.voice.toggle,
             "/voice/cancel": b.voice.cancel,
             "/open": b.open_panel,
@@ -810,7 +967,10 @@ def serve():
     signal.signal(signal.SIGINT, on_signal)
     log(f"crabby bridge on 127.0.0.1:{cfg['port']}{' (socket-activated)' if activated else ''}")
     server.serve_forever()
-    bridge.stop()
+    with bridge.lock:
+        live = bridge.proc is not None
+    if live:
+        bridge.stop(resumable=True)
 
 
 def post(path, data=None):
@@ -830,6 +990,11 @@ def main():
         post("/voice/cancel")
     elif cmd in simple:
         post(simple[cmd])
+    elif cmd == "history":
+        cfg = load_config()
+        with urllib.request.urlopen(f"http://127.0.0.1:{cfg['port']}/history", timeout=10) as res:
+            for s in json.load(res):
+                print(s["id"], time.strftime("%Y-%m-%d %H:%M", time.localtime(s["updated"])), s["title"])
     elif cmd == "send" and len(args) > 1:
         post("/open")
         post("/send", {"text": " ".join(args[1:])})

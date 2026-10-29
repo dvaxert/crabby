@@ -38,6 +38,7 @@
 - **Model switch on the fly**: Haiku / Sonnet / Opus. Every new session starts on the lightest model.
 - **Voice input**: `Mod+\`` records until you press it again (or up to a configurable limit, 60 s by default). [whisper.cpp](https://github.com/ggml-org/whisper.cpp) transcribes it locally on the GPU and the text is sent straight away.
 - **Notifications** when the panel is closed and Claude needs a permission or has finished, with an **Allow** button right in the notification.
+- **History**: browse past panel sessions and pick one up where it left off. They are read from Claude Code's own transcripts, so nothing is stored twice. A session that ended on its own (idle timeout, bridge restart) stays on screen, and the next message continues it.
 - **Move to terminal**: continue the same session in kitty with `claude --resume`.
 - **Speaks your language.** The UI follows Noctalia's language: English, Русский, Українська, Deutsch, Français, Español, Português (BR), Italiano, Polski, Nederlands, Čeština, Türkçe, 简体中文, 日本語, 한국어. Claude answers in the language you write in.
 - **Nothing runs when unused.** The bridge is socket-activated by systemd and exits when idle. `claude` lives only while a session is open and is killed after 15 idle minutes.
@@ -116,6 +117,7 @@ Then:
 | Speak | right-click ✱ · `Mod+\`` (press again to stop, ✕ to drop it) |
 | Send | Enter (Shift+Enter for a newline) |
 | New / end session | ＋ / ⏻ in the panel header |
+| Past sessions | 🕘 in the panel header; click one, then write to continue it |
 | Continue in a terminal | ⌨ in the panel header |
 | From a shell | `crabby send "find my biggest files in ~/Downloads"` |
 

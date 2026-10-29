@@ -44,7 +44,11 @@
     "stop": "End session",
     "voice": "Voice input (Mod+`)",
     "voiceCancel": "Cancel recording (nothing is sent)",
-    "send": "Send"
+    "send": "Send",
+    "history": "History"
+  },
+  "history": {
+    "empty": "No past sessions yet"
   },
   "toast": {
     "bridgeDown": "Crabby bridge is not responding"
@@ -58,7 +62,8 @@
     "turn_error": "Error: {error}",
     "voice_unavailable": "Voice input unavailable: needs {bin} and the model {model}",
     "voice_failed": "Transcription failed: {error}",
-    "nothing_heard": "Didn't hear anything"
+    "nothing_heard": "Didn't hear anything",
+    "history_loaded": "Past session · write to continue it"
   },
   "notify": {
     "done": "Claude replied",

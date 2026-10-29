@@ -44,7 +44,11 @@
     "stop": "Oturumu bitir",
     "voice": "Sesli giriş (Mod+`)",
     "voiceCancel": "Kaydı iptal et (hiçbir şey gönderilmez)",
-    "send": "Gönder"
+    "send": "Gönder",
+    "history": "Geçmiş"
+  },
+  "history": {
+    "empty": "Henüz geçmiş oturum yok"
   },
   "toast": {
     "bridgeDown": "crabby köprüsü yanıt vermiyor"
@@ -58,7 +62,8 @@
     "turn_error": "Hata: {error}",
     "voice_unavailable": "Sesli giriş kullanılamıyor: {bin} ve {model} modeli gerekli",
     "voice_failed": "Yazıya dökme başarısız: {error}",
-    "nothing_heard": "Hiçbir şey duymadım"
+    "nothing_heard": "Hiçbir şey duymadım",
+    "history_loaded": "Geçmiş oturum · devam etmek için yaz"
   },
   "notify": {
     "done": "Claude yanıtladı",

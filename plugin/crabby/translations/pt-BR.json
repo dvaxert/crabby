@@ -44,7 +44,11 @@
     "stop": "Encerrar sessão",
     "voice": "Entrada por voz (Mod+`)",
     "voiceCancel": "Cancelar gravação (nada é enviado)",
-    "send": "Enviar"
+    "send": "Enviar",
+    "history": "Histórico"
+  },
+  "history": {
+    "empty": "Nenhuma sessão anterior ainda"
   },
   "toast": {
     "bridgeDown": "A ponte crabby não está respondendo"
@@ -58,7 +62,8 @@
     "turn_error": "Erro: {error}",
     "voice_unavailable": "Entrada por voz indisponível: requer {bin} e o modelo {model}",
     "voice_failed": "A transcrição falhou: {error}",
-    "nothing_heard": "Não ouvi nada"
+    "nothing_heard": "Não ouvi nada",
+    "history_loaded": "Sessão anterior · escreva para continuar"
   },
   "notify": {
     "done": "Claude respondeu",

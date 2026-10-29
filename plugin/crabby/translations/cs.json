@@ -44,7 +44,11 @@
     "stop": "Ukončit relaci",
     "voice": "Hlasový vstup (Mod+`)",
     "voiceCancel": "Zrušit nahrávání (nic se neodešle)",
-    "send": "Odeslat"
+    "send": "Odeslat",
+    "history": "Historie"
+  },
+  "history": {
+    "empty": "Zatím žádné předchozí relace"
   },
   "toast": {
     "bridgeDown": "Most crabby neodpovídá"
@@ -58,7 +62,8 @@
     "turn_error": "Chyba: {error}",
     "voice_unavailable": "Hlasový vstup není dostupný: je potřeba {bin} a model {model}",
     "voice_failed": "Přepis selhal: {error}",
-    "nothing_heard": "Nic jsem neslyšel"
+    "nothing_heard": "Nic jsem neslyšel",
+    "history_loaded": "Relace z historie · napiš a pokračuj"
   },
   "notify": {
     "done": "Claude odpověděl",

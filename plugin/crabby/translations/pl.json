@@ -44,7 +44,11 @@
     "stop": "Zakończ sesję",
     "voice": "Wprowadzanie głosowe (Mod+`)",
     "voiceCancel": "Anuluj nagranie (nic nie zostanie wysłane)",
-    "send": "Wyślij"
+    "send": "Wyślij",
+    "history": "Historia"
+  },
+  "history": {
+    "empty": "Brak wcześniejszych sesji"
   },
   "toast": {
     "bridgeDown": "Most crabby nie odpowiada"
@@ -58,7 +62,8 @@
     "turn_error": "Błąd: {error}",
     "voice_unavailable": "Wprowadzanie głosowe niedostępne: wymaga {bin} i modelu {model}",
     "voice_failed": "Rozpoznawanie nie powiodło się: {error}",
-    "nothing_heard": "Nic nie usłyszałem"
+    "nothing_heard": "Nic nie usłyszałem",
+    "history_loaded": "Sesja z historii · napisz, aby kontynuować"
   },
   "notify": {
     "done": "Claude odpowiedział",

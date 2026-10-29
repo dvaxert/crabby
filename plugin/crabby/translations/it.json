@@ -44,7 +44,11 @@
     "stop": "Termina sessione",
     "voice": "Input vocale (Mod+`)",
     "voiceCancel": "Annulla registrazione (non viene inviato nulla)",
-    "send": "Invia"
+    "send": "Invia",
+    "history": "Cronologia"
+  },
+  "history": {
+    "empty": "Nessuna sessione precedente"
   },
   "toast": {
     "bridgeDown": "Il bridge crabby non risponde"
@@ -58,7 +62,8 @@
     "turn_error": "Errore: {error}",
     "voice_unavailable": "Input vocale non disponibile: servono {bin} e il modello {model}",
     "voice_failed": "Trascrizione non riuscita: {error}",
-    "nothing_heard": "Non ho sentito nulla"
+    "nothing_heard": "Non ho sentito nulla",
+    "history_loaded": "Sessione precedente · scrivi per continuarla"
   },
   "notify": {
     "done": "Claude ha risposto",

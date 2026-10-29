@@ -44,7 +44,11 @@
     "stop": "Terminer la session",
     "voice": "Saisie vocale (Mod+`)",
     "voiceCancel": "Annuler l'enregistrement (rien n'est envoyé)",
-    "send": "Envoyer"
+    "send": "Envoyer",
+    "history": "Historique"
+  },
+  "history": {
+    "empty": "Aucune session passée"
   },
   "toast": {
     "bridgeDown": "Le pont crabby ne répond pas"
@@ -58,7 +62,8 @@
     "turn_error": "Erreur : {error}",
     "voice_unavailable": "Saisie vocale indisponible : il faut {bin} et le modèle {model}",
     "voice_failed": "La transcription a échoué : {error}",
-    "nothing_heard": "Je n'ai rien entendu"
+    "nothing_heard": "Je n'ai rien entendu",
+    "history_loaded": "Session passée · écris pour la reprendre"
   },
   "notify": {
     "done": "Claude a répondu",

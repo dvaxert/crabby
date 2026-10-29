@@ -44,7 +44,11 @@
     "stop": "セッションを終了",
     "voice": "音声入力（Mod+`）",
     "voiceCancel": "録音を取り消す（何も送信されません）",
-    "send": "送信"
+    "send": "送信",
+    "history": "履歴"
+  },
+  "history": {
+    "empty": "過去のセッションはまだありません"
   },
   "toast": {
     "bridgeDown": "crabby ブリッジが応答しません"
@@ -58,7 +62,8 @@
     "turn_error": "エラー: {error}",
     "voice_unavailable": "音声入力を利用できません: {bin} とモデル {model} が必要です",
     "voice_failed": "文字起こしに失敗しました: {error}",
-    "nothing_heard": "何も聞こえませんでした"
+    "nothing_heard": "何も聞こえませんでした",
+    "history_loaded": "過去のセッション · 書き込むと続きから再開します"
   },
   "notify": {
     "done": "Claude が返信しました",

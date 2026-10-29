@@ -44,7 +44,11 @@
     "stop": "结束会话",
     "voice": "语音输入（Mod+`）",
     "voiceCancel": "取消录音（不会发送任何内容）",
-    "send": "发送"
+    "send": "发送",
+    "history": "历史"
+  },
+  "history": {
+    "empty": "还没有历史会话"
   },
   "toast": {
     "bridgeDown": "crabby 桥接无响应"
@@ -58,7 +62,8 @@
     "turn_error": "错误：{error}",
     "voice_unavailable": "语音输入不可用：需要 {bin} 和模型 {model}",
     "voice_failed": "转写失败：{error}",
-    "nothing_heard": "没有听到声音"
+    "nothing_heard": "没有听到声音",
+    "history_loaded": "历史会话 · 发送消息即可继续"
   },
   "notify": {
     "done": "Claude 已回复",

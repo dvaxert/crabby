@@ -44,7 +44,11 @@
     "stop": "Sessie beëindigen",
     "voice": "Spraakinvoer (Mod+`)",
     "voiceCancel": "Opname annuleren (er wordt niets verstuurd)",
-    "send": "Versturen"
+    "send": "Versturen",
+    "history": "Geschiedenis"
+  },
+  "history": {
+    "empty": "Nog geen eerdere sessies"
   },
   "toast": {
     "bridgeDown": "De crabby-bridge reageert niet"
@@ -58,7 +62,8 @@
     "turn_error": "Fout: {error}",
     "voice_unavailable": "Spraakinvoer niet beschikbaar: vereist {bin} en het model {model}",
     "voice_failed": "Transcriptie mislukt: {error}",
-    "nothing_heard": "Niets gehoord"
+    "nothing_heard": "Niets gehoord",
+    "history_loaded": "Eerdere sessie · schrijf om verder te gaan"
   },
   "notify": {
     "done": "Claude heeft geantwoord",

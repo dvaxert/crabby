@@ -44,7 +44,11 @@
     "stop": "Sitzung beenden",
     "voice": "Spracheingabe (Mod+`)",
     "voiceCancel": "Aufnahme verwerfen (nichts wird gesendet)",
-    "send": "Senden"
+    "send": "Senden",
+    "history": "Verlauf"
+  },
+  "history": {
+    "empty": "Noch keine früheren Sitzungen"
   },
   "toast": {
     "bridgeDown": "Die crabby-Bridge antwortet nicht"
@@ -58,7 +62,8 @@
     "turn_error": "Fehler: {error}",
     "voice_unavailable": "Spracheingabe nicht verfügbar: benötigt {bin} und das Modell {model}",
     "voice_failed": "Transkription fehlgeschlagen: {error}",
-    "nothing_heard": "Nichts gehört"
+    "nothing_heard": "Nichts gehört",
+    "history_loaded": "Frühere Sitzung · schreib, um sie fortzusetzen"
   },
   "notify": {
     "done": "Claude hat geantwortet",

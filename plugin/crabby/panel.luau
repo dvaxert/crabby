@@ -1,8 +1,8 @@
 --!nonstrict
 -- Crabby panel: chat with the panel's Claude session.
 --
--- header: model switch, "to terminal", new / end session
--- body:   messages, collapsible tool calls, permission cards
+-- header: history, "to terminal", new / end session, model switch
+-- body:   messages, collapsible tool calls, permission cards; or past sessions
 -- footer: Claude Code style status line + composer with mic and send
 
 local common = require("./lib/common.luau")
@@ -13,6 +13,8 @@ local inputRev = 0 -- bumping it recreates the composer: clears it and grabs foc
 local scrollRev = 0
 local expanded = {} -- tool_use id -> true
 local lastItemCount = 0
+local showHistory = false
+local history = nil -- past sessions, nil while loading
 
 local function send(cmd, payload)
   common.send(cmd, payload)
@@ -43,11 +45,28 @@ local function header()
       ui.glyph({ name = "asterisk", size = 18, color = "primary" }),
       ui.label({ text = noctalia.tr("title"), fontSize = 15, fontWeight = "bold", flexGrow = 1 }),
       ui.button({
+        glyph = "history",
+        variant = showHistory and "primary" or "ghost",
+        controlSize = "sm",
+        tooltip = noctalia.tr("tooltip.history"),
+        onClick = function()
+          showHistory = not showHistory
+          if showHistory then
+            -- Show the last known list right away; a refresh replaces it if it changed.
+            history = common.decode(noctalia.state.get("crabby.history"))
+            send("history")
+          else
+            scrollRev += 1
+          end
+          render()
+        end,
+      }),
+      ui.button({
         glyph = "terminal-2",
         variant = "ghost",
         controlSize = "sm",
         tooltip = noctalia.tr("tooltip.terminal"),
-        enabled = active and (view.session_id or "") ~= "",
+        enabled = view ~= nil and (view.session_id or "") ~= "",
         onClick = function()
           send("terminal")
         end,
@@ -196,7 +215,59 @@ local function permissionCard(p)
   })
 end
 
+local function formatTime(t)
+  local ok, text = pcall(function()
+    if os.date("%Y-%m-%d", t) == os.date("%Y-%m-%d") then
+      return os.date("%H:%M", t)
+    end
+    return os.date("%d.%m %H:%M", t)
+  end)
+  return ok and text or ""
+end
+
+local function historyRow(s)
+  local current = view ~= nil and view.session_id == s.id
+  return ui.column({
+    key = "hist-" .. s.id,
+    gap = 2,
+    fill = current and "primary/0.16" or "surface_variant/0.5",
+    radius = 8,
+    paddingH = 10,
+    paddingV = 6,
+    onClick = function()
+      showHistory = false
+      if not current then
+        send("history_open", s.id)
+      end
+      scrollRev += 1
+      render()
+    end,
+  }, {
+    ui.label({ text = s.title or "", fontSize = 13, maxLines = 2 }),
+    ui.label({ text = formatTime(tonumber(s.updated) or 0), fontSize = 11, color = "on_surface_variant" }),
+  })
+end
+
+local function historyBody()
+  local rows = {}
+  if history == nil then
+    table.insert(rows, ui.label({ text = "…", color = "on_surface_variant", textAlign = "center" }))
+  elseif #history == 0 then
+    table.insert(rows, ui.label({ text = noctalia.tr("history.empty"), color = "on_surface_variant", textAlign = "center", paddingV = 40 }))
+  else
+    for _, s in ipairs(history) do
+      if type(s) == "table" and type(s.id) == "string" then
+        table.insert(rows, historyRow(s))
+      end
+    end
+  end
+  return ui.scroll({ key = "history", flexGrow = 1, gap = 6 }, rows)
+end
+
 local function body()
+  if showHistory then
+    return historyBody()
+  end
   local rows = {}
   local items = view and view.items or {}
   for i, item in ipairs(items) do
@@ -318,6 +389,13 @@ local function applyView(value)
   lastItemCount = count
 end
 
+noctalia.state.watch("crabby.history", function(value)
+  history = common.decode(value) or {}
+  if showHistory then
+    render()
+  end
+end)
+
 noctalia.state.watch("crabby.view", function(value)
   applyView(value)
   render()
@@ -326,6 +404,7 @@ end)
 function onOpen(_context)
   -- Watches are not delivered while the panel is closed: catch up first.
   applyView(noctalia.state.get("crabby.view"))
+  showHistory = false
   noctalia.state.set("crabby.panel", `open|{noctalia.nowMs()}`)
   panel.setWantsSecondTicks(true)
   scrollRev += 1
@@ -353,6 +432,7 @@ function onDraftSubmit(value)
     return
   end
   send("send", text)
+  showHistory = false
   draft = ""
   inputRev += 1
   scrollRev += 1

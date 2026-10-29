@@ -44,7 +44,11 @@
     "stop": "세션 종료",
     "voice": "음성 입력 (Mod+`)",
     "voiceCancel": "녹음 취소 (아무것도 전송되지 않음)",
-    "send": "전송"
+    "send": "전송",
+    "history": "기록"
+  },
+  "history": {
+    "empty": "아직 이전 세션이 없습니다"
   },
   "toast": {
     "bridgeDown": "crabby 브리지가 응답하지 않습니다"
@@ -58,7 +62,8 @@
     "turn_error": "오류: {error}",
     "voice_unavailable": "음성 입력을 사용할 수 없음: {bin}과 모델 {model}이 필요합니다",
     "voice_failed": "받아쓰기 실패: {error}",
-    "nothing_heard": "아무것도 들리지 않았습니다"
+    "nothing_heard": "아무것도 들리지 않았습니다",
+    "history_loaded": "이전 세션 · 메시지를 보내면 이어서 진행합니다"
   },
   "notify": {
     "done": "Claude가 답했습니다",

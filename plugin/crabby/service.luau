@@ -6,7 +6,8 @@
 -- held only while it is useful (panel open, session or voice active, or a
 -- command was just sent), so an idle bridge can exit and claude never runs
 -- in the background for nothing. Commands arrive on "crabby.cmd" as
--- "<nonce>|<cmd>|<payload>" or over IPC.
+-- "<nonce>|<cmd>|<payload>" or over IPC. The list of past sessions is fetched
+-- on demand into "crabby.history".
 
 noctalia.setUpdateInterval(1000)
 
@@ -139,6 +140,17 @@ local function post(path, body)
   end)
 end
 
+-- Past sessions, newest first: [{id, title, updated}].
+local function fetchHistory()
+  noctalia.http({ url = base .. "/history" }, function(res)
+    if res.ok and res.status == 200 then
+      noctalia.state.set("crabby.history", res.body)
+    else
+      noctalia.state.set("crabby.history", "[]")
+    end
+  end)
+end
+
 local ROUTES = {
   interrupt = "/interrupt",
   start = "/session/start",
@@ -162,6 +174,10 @@ local function dispatch(cmd, payload)
     if id then
       post("/permission", { id = id, allow = allow == "1" })
     end
+  elseif cmd == "history" then
+    fetchHistory()
+  elseif cmd == "history_open" then
+    post("/history/open", { id = payload })
   elseif cmd == "model" then
     post("/model", { model = payload })
   elseif cmd == "allow_all" then
